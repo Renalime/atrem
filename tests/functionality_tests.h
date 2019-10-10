@@ -15,7 +15,7 @@ typedef struct base_functionality_test{
 	unsigned char dot_test : 1;
 }base_functionality_test_flags;
 
-const char * test_message_delimiter = "-------------------------------";
+static const char * test_message_delimiter = "-------------------------------";
 
 void print_test_message(char * text);
 void test_functionality();

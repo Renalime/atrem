@@ -2,7 +2,7 @@
 
 int match(char *regexp, char *text)
 {
-	if (rexexp[0] == '^')
+	if (regexp[0] == '^')
 		return matchhere(regexp+1, text);
 	do {
 		if (matchhere(regexp, text))
