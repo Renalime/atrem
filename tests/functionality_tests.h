@@ -3,16 +3,16 @@
 
 #include "../src/matcher.h"
 
-#define N_PASSED 0;
-#define P_PASSED 1;
-#define PASSED 2;
+#define N_PASSED 0
+#define P_PASSED 1
+#define PASSED 2
 
 typedef struct base_functionality_test{
-	unsigned char star_test : 1;
-	unsigned char dollar_sign_test: 1;
-	unsigned char circumflex_test : 1;
-	unsigned char literal_test : 1;
-	unsigned char dot_test : 1;
+	unsigned char star_test : 2;
+	unsigned char dollar_sign_test: 2;
+	unsigned char circumflex_test : 2;
+	unsigned char literal_test : 2;
+	unsigned char dot_test : 2;
 }base_functionality_test_flags;
 
 static const char * test_message_delimiter = "-------------------------------";
