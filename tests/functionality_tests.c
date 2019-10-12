@@ -11,65 +11,103 @@
 #include "functionality_tests.h"
 #include <stdio.h>
 #include <math.h>
+#include <stdlib.h>
 
-void print_test_message(char * text)
+char calc_expected(char overall)
+{
+	char i = 0;
+	char res = 0;
+	for (; i < overall; i++)
+		res += (char)pow(2, i);
+	return res;
+}
+
+void print_test_message(char *text)
 {
 	printf("%s\n", test_message_delimiter);
 	printf("%s\n", text);
 	printf("%s\n", test_message_delimiter);
 }
 
-char test_star(){
-	char *n_pass_message = "test_star: not passed";
-	char *p_pass_message = "test_star: passed partially";
-	char *pass_message = "test_star: passed";
-	char *test_string = "cccc wwww";
-	char *test_regexp_present = "c*";
-	char *test_regexp_missing = "d*abc";
+char print_test_result(test_information *ti)
+{
+	char i = 0;
+	if (ti->passed == 0) {
+		print_test_message(ti->n_pass_message);			
+		return N_PASSED;			
+	} else if (ti->passed == ti->expected) {
+		print_test_message(ti->pass_message);
+		return PASSED;
+	} else {
+		print_test_message(ti->p_pass_message);
+		for (; i < ti->overall; i++){
+			if (!(ti->passed & (char)pow(2, i)))
+				printf("1:\nText: %s\nRegex: %s\n", ti->test_string, ti->test_regexp[i]);
+
+		}
+	}
+	free(ti->test_regexp);
+	return P_PASSED;
+}
+
+void test_match(test_information *ti)
+{
+	char ret;
+	char i = 0;
+	for (; i < ti->overall; i++){
+		ret = match(ti->test_regexp[i], ti->test_string);	
+		if (ret == ((ti->expected_ret & (char)pow(2, i))>>i))
+			ti->passed |= (char)pow(2, i);
+	}
+}
+
+char test_star()
+{
+	test_information ti;
+	ti.n_pass_message = "test_star: not passed";
+	ti.p_pass_message = "test_star: passed partially";
+	ti.pass_message = "test_star: passed";
+	ti.test_string = "cccc wwww";
+	ti.overall = 2;
+	ti.test_regexp = malloc(ti.overall*(sizeof(char *)));
+	ti.test_regexp[0] = "c*";
+	ti.test_regexp[1] = "d*abc";
+	ti.passed = 0;
+	ti.expected = calc_expected(ti.overall);
+	ti.expected_ret = 0;
+
+	ti.expected_ret += (char)pow(2, 0);
+	test_match(&ti);
+	return print_test_result(&ti);
+}
+/*
+char test_dollar_sign()
+{
+	char *n_pass_message = "test_dollar_sign: not passed";
+	char *p_pass_message = "test_dollar_sign: passed partially";	
+	char *pass_message = "test_dollar_sign: passed";
+	char *test_string = "qwerty";
+	char *test_regexp_possitive = "qwerty$";
+	char *test_regexp_negative = "werty$";
 	char overall = 2;
 	char passed = 0;
 	char expected = 0;
 	char ret;
+	char i=0;
 
-	for (int i=0; i<overall; i++) {
-		expected += (char)pow(2, i);
-	}
-
-	ret = match(test_regexp_present, test_string);
-	if (ret == 1)
-		passed |= (char)0x01;
-	ret = match(test_regexp_missing, test_string);
-	if (ret == 0)
-		passed |= (char)0x02;	
-
-	if (passed == 0) {
-		print_test_message(n_pass_message);
-		return N_PASSED;			
-	} else if (passed == expected) {
-		print_test_message(pass_message);
-		return PASSED;
-	} else {
-		print_test_message(p_pass_message);
-		if (!(passed & 0x01))
-			printf("1:\nText: %s\nRegex: %s\n", test_string, test_regexp_present);
-		if (!(passed & 0x02))
-			printf("2:\nText: %s\nRegex: %s\n", test_string, test_regexp_missing);
-	}
-	return P_PASSED;
 }
-
-void test_functionality(){
+*/
+void test_functionality(char verbose)
+{
+	verbose_mode=verbose;
 	char ret;
 	base_functionality_test_flags flags;
 	ret=test_star();
 	if (ret == PASSED) {
 		flags.star_test=0;
-		printf("YEY!\n");
 	} else if (ret == P_PASSED) {
 		flags.star_test=2;
-		printf("Could be better!\n");
 	} else {
 		flags.star_test=1;
-		printf("It's disgusting!\n");
 	}
 }

@@ -13,7 +13,13 @@ struct program_options{
 	unsigned char error : 1;
 };
 
-static struct program_options po; 
+static struct program_options po = {
+	1,
+	1,
+	1,
+	0,
+	0
+}; 
 
 void show_help(){
 	printf("-h: Show help\n"
@@ -59,7 +65,11 @@ int main(int argc, char **argv){
 	if (po.show_help == 1) {
 		return 0;
 	}
-	test_functionality();	
-	test_units();
+	if (po.func_tests) {
+		test_functionality(po.verbose_mode);
+	}
+	if (po.unit_tests) {
+		test_units(po.verbose_mode);
+	}
 	return 0;
 }
