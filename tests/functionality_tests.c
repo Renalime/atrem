@@ -34,17 +34,20 @@ char print_test_result(test_information *ti)
 {
 	char i = 0;
 	if (ti->passed == 0) {
-		print_test_message(ti->n_pass_message);			
+		if (verbose_mode)
+			print_test_message(ti->n_pass_message);			
 		return N_PASSED;			
 	} else if (ti->passed == ti->expected) {
-		print_test_message(ti->pass_message);
+		if (verbose_mode)
+			print_test_message(ti->pass_message);
 		return PASSED;
 	} else {
-		print_test_message(ti->p_pass_message);
-		for (; i < ti->overall; i++){
-			if (!(ti->passed & (char)pow(2, i)))
-				printf("1:\nText: %s\nRegex: %s\n", ti->test_string, ti->test_regexp[i]);
-
+		if (verbose_mode) {
+			print_test_message(ti->p_pass_message);
+			for (; i < ti->overall; i++){
+				if (!(ti->passed & (char)pow(2, i)))
+					printf("1:\nText: %s\nRegex: %s\n", ti->test_string, ti->test_regexp[i]);
+			}
 		}
 	}
 	free(ti->test_regexp);
