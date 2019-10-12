@@ -7,13 +7,13 @@
 #define P_PASSED 1
 #define PASSED 2
 
-typedef struct base_functionality_test{
+typedef struct functionality_test_flags{
 	unsigned char star_test : 2;
 	unsigned char dollar_sign_test: 2;
 	unsigned char circumflex_test : 2;
 	unsigned char literal_test : 2;
 	unsigned char dot_test : 2;
-}base_functionality_test_flags;
+}functionality_test_flags;
 
 typedef struct test_information{
 	char *n_pass_message;
@@ -39,9 +39,14 @@ void test_match(test_information * ti);
 void test_functionality(char verbose);
 
 char test_star();
+void call_test_star(functionality_test_flags *f);
 char test_dollar_sign();
+void call_test_dollar_sign(functionality_test_flags *f);
 char test_circumflex();
+void call_test_circumflex(functionality_test_flags *f);
 char test_literal();
+void call_test_literal(functionality_test_flags *f);
 char test_dot();
+void call_test_dot(functionality_test_flags *f);
 
 #endif

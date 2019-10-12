@@ -80,29 +80,44 @@ char test_star()
 	test_match(&ti);
 	return print_test_result(&ti);
 }
-/*
-char test_dollar_sign()
-{
-	char *n_pass_message = "test_dollar_sign: not passed";
-	char *p_pass_message = "test_dollar_sign: passed partially";	
-	char *pass_message = "test_dollar_sign: passed";
-	char *test_string = "qwerty";
-	char *test_regexp_possitive = "qwerty$";
-	char *test_regexp_negative = "werty$";
-	char overall = 2;
-	char passed = 0;
-	char expected = 0;
-	char ret;
-	char i=0;
 
+/*
+void call_test_star(functinality_test_flags *f)
+{
+	char ret;
+	ret = test_star();
+	if (ret == PASSED)
+		f->star_test = 0;
+	else if (ret == N_PASSED)
+		f->star_test
 }
 */
+char test_dollar_sign()
+{
+	test_information ti;
+	ti.n_pass_message = "test_dollar_sign: not passed";
+	ti.p_pass_message = "test_dollar_sign: passed partially";	
+	ti.pass_message = "test_dollar_sign: passed";
+	ti.test_string = "qwerty";
+	ti.overall = 2;
+	ti.test_regexp = malloc(ti.overall*(sizeof(char *)));
+	ti.test_regexp[0] = "qwerty$";
+	ti.test_regexp[1] = "werty$";
+	ti.passed = 0;
+	ti.expected = calc_expected(ti.overall);
+	ti.expected_ret = 0;
+
+	ti.expected_ret += (char)pow(2, 0);
+	test_match(&ti);
+	return print_test_result(&ti);
+}
+
 void test_functionality(char verbose)
 {
 	verbose_mode=verbose;
 	char ret;
-	base_functionality_test_flags flags;
-	ret=test_star();
+	functionality_test_flags flags;
+	ret = test_star();
 	if (ret == PASSED) {
 		flags.star_test=0;
 	} else if (ret == P_PASSED) {
