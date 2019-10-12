@@ -13,6 +13,7 @@
 #include <math.h>
 #include <stdlib.h>
 
+
 char calc_expected(char overall)
 {
 	char i = 0;
@@ -81,17 +82,7 @@ char test_star()
 	return print_test_result(&ti);
 }
 
-/*
-void call_test_star(functinality_test_flags *f)
-{
-	char ret;
-	ret = test_star();
-	if (ret == PASSED)
-		f->star_test = 0;
-	else if (ret == N_PASSED)
-		f->star_test
-}
-*/
+
 char test_dollar_sign()
 {
 	test_information ti;
@@ -102,7 +93,7 @@ char test_dollar_sign()
 	ti.overall = 2;
 	ti.test_regexp = malloc(ti.overall*(sizeof(char *)));
 	ti.test_regexp[0] = "qwerty$";
-	ti.test_regexp[1] = "werty$";
+	ti.test_regexp[1] = "qwertyu$";
 	ti.passed = 0;
 	ti.expected = calc_expected(ti.overall);
 	ti.expected_ret = 0;
@@ -112,17 +103,20 @@ char test_dollar_sign()
 	return print_test_result(&ti);
 }
 
+#define TEST_CALL(TEST_NAME) \
+				ret = TEST_NAME();\
+				if (ret == PASSED)\
+					flags.TEST_NAME = 0;\
+				else if (ret == N_PASSED)\
+					flags.TEST_NAME = 1;\
+				else flags.TEST_NAME = 2;\
+
+
 void test_functionality(char verbose)
 {
 	verbose_mode=verbose;
 	char ret;
 	functionality_test_flags flags;
-	ret = test_star();
-	if (ret == PASSED) {
-		flags.star_test=0;
-	} else if (ret == P_PASSED) {
-		flags.star_test=2;
-	} else {
-		flags.star_test=1;
-	}
+	TEST_CALL(test_star);
+	TEST_CALL(test_dollar_sign);
 }
