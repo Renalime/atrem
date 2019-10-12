@@ -21,7 +21,6 @@ typedef struct test_information{
 	char *pass_message;
 	char *test_string;
 	char **test_regexp;
-	char n_regexp;
 	char overall;
 	char passed;
 	char expected;
@@ -32,8 +31,9 @@ typedef struct test_information{
 static const char * test_message_delimiter = "-------------------------------";
 static char verbose_mode;
 
-void print_test_message(char * text);
-char print_test_result(test_information * ti);
+void print_test_message(char *text);
+char print_test_result(test_information *ti);
+void print_results(functionality_test_flags *f);
 char calc_expected(char overall);
 void test_match(test_information * ti);
 void test_functionality(char verbose);

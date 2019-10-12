@@ -106,6 +106,26 @@ char test_dollar_sign()
 	return print_test_result(&ti);
 }
 
+
+#define TEST_RESULT(TEST_NAME, FORMAT) \
+			if (f->TEST_NAME == 0)\
+				printf(FORMAT, #TEST_NAME, pass_message);\
+			else if (f->TEST_NAME == 1)\
+				printf(FORMAT, #TEST_NAME, n_pass_message);\
+			else\
+				printf(FORMAT, #TEST_NAME, p_pass_message);\
+
+void print_results(functionality_test_flags *f)
+{
+	char *pass_message = "passed";
+	char *n_pass_message = "not passed";
+	char *p_pass_message = "partially passed"; 
+	char *format = "%s: %s\n";
+	printf("Functionality tests result:\n");
+	TEST_RESULT(test_star, format);
+	TEST_RESULT(test_dollar_sign, format);
+}
+
 #define TEST_CALL(TEST_NAME) \
 				ret = TEST_NAME();\
 				if (ret == PASSED)\
@@ -122,4 +142,5 @@ void test_functionality(char verbose)
 	functionality_test_flags flags;
 	TEST_CALL(test_star);
 	TEST_CALL(test_dollar_sign);
+	print_results(&flags);
 }
