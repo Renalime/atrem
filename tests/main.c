@@ -16,7 +16,7 @@ struct program_options{
 static struct program_options po = {
 	1,
 	1,
-	1,
+	0,
 	0,
 	0
 }; 

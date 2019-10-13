@@ -13,6 +13,18 @@
 #include <math.h>
 #include <stdlib.h>
 
+#define INIT_TEST(TEST_NAME, TEST_STRING, TEST_OVERALL) \
+			ti.n_pass_message = #TEST_NAME ": not passed";\
+			ti.p_pass_message = #TEST_NAME ": passed partially";\
+			ti.pass_message = #TEST_NAME ": passed";\
+			ti.test_string = #TEST_STRING;\
+			ti.overall = TEST_OVERALL;\
+			ti.test_regexp = malloc(ti.overall*(sizeof(char *)));\
+			ti.passed = 0;\
+			ti.expected = calc_expected(ti.overall);\
+			ti.expected_ret = 0;\
+
+
 
 char calc_expected(char overall)
 {
@@ -68,18 +80,9 @@ void test_match(test_information *ti)
 char test_star()
 {
 	test_information ti;
-	ti.n_pass_message = "test_star: not passed";
-	ti.p_pass_message = "test_star: passed partially";
-	ti.pass_message = "test_star: passed";
-	ti.test_string = "cccc wwww";
-	ti.overall = 2;
-	ti.test_regexp = malloc(ti.overall*(sizeof(char *)));
+	INIT_TEST(test_star, cccc wwww, 2);
 	ti.test_regexp[0] = "c*";
 	ti.test_regexp[1] = "d*abc";
-	ti.passed = 0;
-	ti.expected = calc_expected(ti.overall);
-	ti.expected_ret = 0;
-
 	ti.expected_ret += (char)pow(2, 0);
 	test_match(&ti);
 	return print_test_result(&ti);
@@ -89,21 +92,23 @@ char test_star()
 char test_dollar_sign()
 {
 	test_information ti;
-	ti.n_pass_message = "test_dollar_sign: not passed";
-	ti.p_pass_message = "test_dollar_sign: passed partially";	
-	ti.pass_message = "test_dollar_sign: passed";
-	ti.test_string = "qwerty";
-	ti.overall = 2;
-	ti.test_regexp = malloc(ti.overall*(sizeof(char *)));
+	INIT_TEST(test_dollar_sign, qwerty, 2);
 	ti.test_regexp[0] = "qwerty$";
 	ti.test_regexp[1] = "qwertyu$";
-	ti.passed = 0;
-	ti.expected = calc_expected(ti.overall);
-	ti.expected_ret = 0;
-
 	ti.expected_ret += (char)pow(2, 0);
 	test_match(&ti);
 	return print_test_result(&ti);
+}
+
+char test_circumflex()
+{
+	test_information ti;
+	INIT_TEST(test_circumflex, qwerty, 2);
+	ti.test_regexp[0] = "^qwerty";
+	ti.test_regexp[1] = "^werty";
+	ti.expected_ret += (char)pow(2, 0);
+	test_match(&ti);
+	return print_test_result(&ti);	
 }
 
 
@@ -124,6 +129,7 @@ void print_results(functionality_test_flags *f)
 	printf("Functionality tests result:\n");
 	TEST_RESULT(test_star, format);
 	TEST_RESULT(test_dollar_sign, format);
+	TEST_RESULT(test_circumflex, format);
 }
 
 #define TEST_CALL(TEST_NAME) \
@@ -140,7 +146,8 @@ void test_functionality(char verbose)
 	verbose_mode=verbose;
 	char ret;
 	functionality_test_flags flags;
-	TEST_CALL(test_star);
+//	TEST_CALL(test_star);
 	TEST_CALL(test_dollar_sign);
+//	TEST_CALL(test_circumflex);
 	print_results(&flags);
 }
