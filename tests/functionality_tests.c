@@ -111,6 +111,27 @@ char test_circumflex()
 	return print_test_result(&ti);	
 }
 
+char test_literal()
+{
+	test_information ti;
+	INIT_TEST(test_literal, qwerty, 2);
+	ti.test_regexp[0] = "qwerty";
+	ti.test_regexp[1] = "sfqweqw";
+	ti.expected_ret += (char)pow(2,0);
+	test_match(&ti);
+	return print_test_result(&ti);
+}
+
+char test_dot()
+{
+	test_information ti;
+	INIT_TEST(test_dot, qwerty, 2);
+	ti.test_regexp[0] = ".werty";
+	ti.test_regexp[1] = "qwerty.";
+	ti.expected_ret += (char)pow(2,0);
+	test_match(&ti);
+	return print_test_result(&ti);
+}
 
 #define TEST_RESULT(TEST_NAME, FORMAT) \
 			if (f->TEST_NAME == 0)\
@@ -130,6 +151,8 @@ void print_results(functionality_test_flags *f)
 	TEST_RESULT(test_star, format);
 	TEST_RESULT(test_dollar_sign, format);
 	TEST_RESULT(test_circumflex, format);
+	TEST_RESULT(test_literal, format);
+	TEST_RESULT(test_dot, format);
 }
 
 #define TEST_CALL(TEST_NAME) \
@@ -146,8 +169,10 @@ void test_functionality(char verbose)
 	verbose_mode=verbose;
 	char ret;
 	functionality_test_flags flags;
-//	TEST_CALL(test_star);
+	TEST_CALL(test_star);
 	TEST_CALL(test_dollar_sign);
-//	TEST_CALL(test_circumflex);
+	TEST_CALL(test_circumflex);
+	TEST_CALL(test_literal);
+	TEST_CALL(test_dot);
 	print_results(&flags);
 }
