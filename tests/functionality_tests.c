@@ -134,9 +134,9 @@ char test_dot()
 }
 
 #define TEST_RESULT(TEST_NAME, FORMAT) \
-			if (f->TEST_NAME == 0)\
+			if (f->TEST_NAME == PASSED)\
 				printf(FORMAT, #TEST_NAME, pass_message);\
-			else if (f->TEST_NAME == 1)\
+			else if (f->TEST_NAME == N_PASSED)\
 				printf(FORMAT, #TEST_NAME, n_pass_message);\
 			else\
 				printf(FORMAT, #TEST_NAME, p_pass_message);\
@@ -158,10 +158,11 @@ void print_results(functionality_test_flags *f)
 #define TEST_CALL(TEST_NAME) \
 				ret = TEST_NAME();\
 				if (ret == PASSED)\
-					flags.TEST_NAME = 0;\
+					flags.TEST_NAME = PASSED;\
 				else if (ret == N_PASSED)\
-					flags.TEST_NAME = 1;\
-				else flags.TEST_NAME = 2;\
+					flags.TEST_NAME = N_PASSED;\
+				else\
+					flags.TEST_NAME = P_PASSED;\
 
 
 void test_functionality(char verbose)
