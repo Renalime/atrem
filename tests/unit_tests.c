@@ -1,14 +1,8 @@
 #include "unit_tests.h"
-#include <stdio.h>
+#include "test_framework.h"
 #include "../src/matcher.h"
 
-#define FAIL() printf("Failure in %s() line %d\n", __func__, __LINE__)
-#define SUCCESS() printf("%s(): passed\n", __func__)
-#define _assert(test) do { if (!(test)) { FAIL(); return 1; } else { SUCCESS(); } } while(0)
-#define _check(test) do { if (!(test)) { FAIL(); } else { SUCCESS(); }
-#define _verify(test) do { int r = test(); tests_run++; if (r) return r; } while(0)
-
-static int tests_run = 0;
+unsigned int test_count = 0;
 
 int test_matchhere_01()
 {
@@ -16,13 +10,34 @@ int test_matchhere_01()
 	return 0;
 }
 
-int all_tests()
+int test_matchhere_02()
 {
-	_verify(test_matchhere_01);
+	_check(matchhere("qwerty.", "qwertyu") == 1);
 	return 0;
 }
 
-void test_units(char verbose){
-	verbose_mode = verbose;
+int test_matchstar()
+{
+	_assert(matchstar('c', "qwerty", "ccccqwerty") == 1);
+	return 0;
+}
+
+int test_match()
+{
+	_assert(match("^qwerty", "qwertyabc") == 1);
+	return 0; 
+}
+
+int all_tests()
+{
+	_verify(test_matchhere_01);
+	_verify(test_matchhere_02);
+	_verify(test_matchstar);
+	_verify(test_match);
+	return 0;
+}
+
+void test_units(char verbose)
+{
 	all_tests();
 }
