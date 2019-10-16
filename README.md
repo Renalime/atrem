@@ -3,10 +3,12 @@
 ## What is it all about?
 This project was started for the sake of practicing in the C programming language. As a starting point I chose [this](https://www.cs.princeton.edu/courses/archive/spr09/cos333/beautiful.html) article by Brian Kernighan, but except that, there are lots of other resources that will be used and, of cource, cited here. This is supposed to be a library when it's released (actually, sounds like a joke to me, considering current state of the project).
 
-So, for now, it's not an open source project, since it lacks a lot of needed pieces.  If the project will be big enough in terms of functionality and I will deem this project as something valuable to the open source community, then it's possible for the project to become a part of the open source world.  
-
 ## Current state
-Right now there is nothing in the repository, but in the near future, i believe, there will be a lot of beatiful code (well, we all know that this is not going to happen).
+Right now the repository comprised only of the functionality that is present in the [original article](https://www.cs.princeton.edu/courses/archive/spr09/cos333/beautiful.html) and some [tests](#tests).
 
-## Plans
-I plan to include a basic functionality in the library, although i haven't defined what a basic functionality is. So, for the current state of affairs, let this be as it is (I hope that I won't forget to add some details to this section).
+## Plans 
+I plan this library to be compliant with IEEE POSIX ERE (Extended Regular Expression) standard.
+My current goal is to include all the necessary [tests](#tests) for the functionality that is avaiable in the [original article](https://www.cs.princeton.edu/courses/archive/spr09/cos333/beautiful.html). After that, I will move on to implementing the rest of the planned functionality with consequent addition of tests.
+
+## Tests
+For now, the tests are divided into 2 groups: functionality tests and unit tests. The former ones are already written and reside in the 'tests' directory. Their design is completely made up by me and they are totally bloated with unnecessary garbage, so don't even bother with them. The latter ones are WIP, and they will certainly differ from the former ones. Their design is inspired by the [Eric Radmand's article](http://eradman.com/posts/tdd-in-c.html) on test-driven development in C.
