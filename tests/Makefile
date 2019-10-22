@@ -1,4 +1,4 @@
-#CFLAGS = -g
+CFLAGS = -pedantic 
 LDLIBS = -lm
 OBJECTS = main.o functionality_tests.o unit_tests.o matcher.o
 VPATH = ../src

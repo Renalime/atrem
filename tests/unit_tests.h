@@ -5,7 +5,8 @@ void test_units(char verbose);
 
 int test_matchhere_01();
 int test_matchhere_02();
-int test_matchstar();
+int test_matchstar_01();
+int test_matchstar_02();
 static int test_match();
 int all_tests();
 

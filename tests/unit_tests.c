@@ -16,9 +16,15 @@ int test_matchhere_02()
 	return 0;
 }
 
-int test_matchstar()
+int test_matchstar_01()
 {
-	_assert(matchstar('c', "qwerty", "ccccqwerty") == 1);
+	_assert(matchstar('.', "qwerty", "ccccqwerty") == 1);
+	return 0;
+}
+
+int test_matchstar_02()
+{
+	_assert(matchstar('.', "?)", "(cccccc)wwwww") == 1);
 	return 0;
 }
 
@@ -32,7 +38,8 @@ int all_tests()
 {
 	_verify(test_matchhere_01);
 	_verify(test_matchhere_02);
-	_verify(test_matchstar);
+	_verify(test_matchstar_01);
+	_verify(test_matchstar_02);
 	_verify(test_match);
 	return 0;
 }

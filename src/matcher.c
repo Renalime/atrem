@@ -26,9 +26,18 @@ int matchhere(char *regexp, char *text)
 
 int matchstar(int c, char *regexp, char *text)
 {
-	do {
-		if (matchhere(regexp, text))
-			return 1;
-	} while (*text != '\0' && (*text++ == c || c == '.'));
-	return 0;
+	if (regexp[0] == '?') {
+		do {
+			if (matchhere(regexp + 1, text))
+				return 1;
+		} while (*text != '\0' && (*text++ == c || c == '.'));
+	} else {
+		char *t; 
+		for (t = text; *t != '\0' && (*t == c || c == '.'); t++);
+		do {
+			if (matchhere(regexp, t))
+				return 1;
+		} while (t-- > text);
+	} 
+	return 0; 
 }
