@@ -37,7 +37,20 @@ int matchstar(int c, char *regexp, char *text)
 		do {
 			if (matchhere(regexp, t))
 				return 1;
-		} while (t-- > text);
+		} while (t-- > text); 
 	} 
 	return 0; 
+}
+
+int match_plus(int c, char *reg_exp, char *text)
+{
+	if (reg_exp[0] == '?') {
+		if ((c != '.' && *text != c) || (c == '.' && *text == '\0'))
+			return 0;
+		text++;
+		do {
+			if (matchhere(reg_exp + 1, text))
+				return 1;
+		} while (*text != '\0' && (*text++ == c || c == '.'));	
+	}
 }
