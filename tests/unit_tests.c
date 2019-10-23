@@ -40,6 +40,12 @@ int test_match_plus_01()
 	return 0;
 }
 
+int test_match_plus_02()
+{
+	_assert(match_plus('c', "ccqwerty", "ccccqwerty") == 1);
+	return 0;
+}
+
 int all_tests()
 {
 	_verify(test_matchhere_01);
@@ -48,6 +54,7 @@ int all_tests()
 	_verify(test_matchstar_02);
 	_verify(test_match);
 	_verify(test_match_plus_01);
+	_verify(test_match_plus_02);
 	return 0;
 }
 
