@@ -15,6 +15,8 @@ int matchhere(char *regexp, char *text)
 {
 	if (regexp[0] == '\0')
 		return 1;
+	if (regexp[1] == '?') 
+		return (*text == regexp[0]) ? matchhere(regexp + 2, text + 1) : matchhere(regexp + 2, text);
 	if (regexp[1] == '*')
 		return matchstar(regexp[0], regexp + 2, text);
 	if (regexp[1] == '+')
