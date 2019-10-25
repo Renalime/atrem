@@ -7,11 +7,15 @@ int test_matchhere_01();
 int test_matchhere_02();
 int test_matchhere_03();
 int test_matchhere_04();
+int test_matchhere_05();
 int test_matchstar_01();
 int test_matchstar_02();
 static int test_match();
 int test_match_plus_01();
 int test_match_plus_02();
+int test_match_escape_01();
+int test_match_escape_02();
+int test_match_escape_03();
 int all_tests();
 
 #endif

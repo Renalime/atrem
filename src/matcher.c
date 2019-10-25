@@ -11,10 +11,14 @@ int match(char *regexp, char *text)
 	return 0;
 }
 
+/* Add additional function to handle backslash, because it has a lot of special cases which must be checked properly */
+
 int matchhere(char *regexp, char *text)
 {
 	if (regexp[0] == '\0')
 		return 1;
+	if (regexp[0] == '\\')
+		return match_escape(regexp + 1, text);
 	if (regexp[1] == '?') 
 		return (*text == regexp[0]) ? matchhere(regexp + 2, text + 1) : matchhere(regexp + 2, text);
 	if (regexp[1] == '*')
@@ -50,6 +54,18 @@ int match_plus(int c, char *reg_exp, char *text)
 {
 	if (*text == '\0' || (c != '.' && *text != c))
 		return 0;
-	text++;
-	return matchstar(c, reg_exp, text);
+	return matchstar(c, reg_exp, ++text);
+}
+
+int match_escape(char *reg_exp, char *text)
+{
+	if (reg_exp[0] == '\0')
+		return 0;
+	if (*text != '\0') {
+		if (reg_exp[0] == '\\')
+			return (*text == '\\') ? matchhere(reg_exp + 1, text + 1) : 0;
+		else
+			return matchhere(reg_exp, text);
+	}
+	return 0;
 }
