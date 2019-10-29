@@ -3,8 +3,8 @@
 
 #define NULL 0
 
-enum a_re_quantifiers{A_CHAR, A_STAR, A_ESCAPE, A_PLUS, A_BRACES, A_ERROR};
-enum a_errors{A_ZERO_ESCAPE, A_COMP_ERR};
+enum a_re_quantifiers{A_CHAR, A_STAR, A_ESCAPE, A_PLUS, A_BRACES};
+enum a_errors{A_NO_ERR, A_ZERO_ESCAPE, A_MEM_ERR};
 
 typedef union {
 	char a_char;
@@ -28,14 +28,13 @@ struct a_token_node{
 typedef struct {
 	a_token_node *head;
 	a_token_node *current;
+	a_token_node *last;
 }a_token_list;
 
-a_token_list *a_rp_list;
-
-a_reg_exp_token * a_get_next_token();
-unsigned char a_add_token(a_reg_exp_token *t);
-void a_rm_list();
-void a_init_list();
+a_reg_exp_token * a_get_next_token(a_token_list *l);
+unsigned char a_add_token(a_reg_exp_token *t, a_token_list *l);
+void a_rm_list(a_token_list *l);
+a_token_list * a_init_list();
 unsigned char a_re_translate(char *reg_exp);
 
 
