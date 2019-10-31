@@ -1,6 +1,6 @@
 CFLAGS = -pedantic -Wall
 LDLIBS = -lm
-OBJECTS = main.o functionality_tests.o unit_tests.o matcher.o re_translator.o
+OBJECTS = main.o functionality_tests.o unit_tests.o matcher.o re_translator.o token_list.o
 VPATH = ../src
 
 .PHONY: clean all
@@ -17,7 +17,9 @@ unit_tests.o: unit_tests.c unit_tests.h matcher.c matcher.h test_framework.h
 
 matcher.o: matcher.c matcher.h
 
-re_translator.o: re_translator.c re_translator.h
+re_translator.o: re_translator.c re_translator.h token_list.h
+
+token_list.o: token_list.h token_list.c
 
 clean:
 	-rm *.o
