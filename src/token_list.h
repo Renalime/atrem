@@ -7,7 +7,13 @@ typedef union {
 }a_re_text;
 
 typedef struct {
+	int min;
+	int max;
+}a_re_range;
+
+typedef struct {
 	int a_quantifier;	
+	a_re_range a_braces_range;
 	unsigned char a_re_text_type;
 	a_re_text a_text;
 	unsigned char a_is_negated;

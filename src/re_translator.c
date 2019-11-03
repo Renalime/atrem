@@ -1,6 +1,5 @@
 #include "re_translator.h"
 #include <stdlib.h>
-#include <ctype.h>
 #include "globals.h"
 
 /* 
@@ -17,8 +16,102 @@ unsigned char a_check_here(char *reg_exp, a_token_list *l)
 		return a_escape_token(reg_exp + 1, l);	
 	if (*reg_exp == '$' && *(reg_exp + 1) == '\0')
 		return a_generic_token(reg_exp, A_DOLLAR, l);
-
+	if (a_is_valid_char(*reg_exp))
+		return a_char_token(reg_exp, l);
 	return A_INVALID_RE;
+}
+
+/* Add check for the end of string */
+
+unsigned char a_char_token(char *reg_exp, a_token_list *l)
+{
+	a_re_text text;
+	a_reg_exp_token *token;	
+	unsigned char is_quantifier = a_is_quantifier(*(reg_exp + 1));
+	text.a_char = *reg_exp;		
+	token = a_gen_token(is_quantifier, RE_CHAR_TYPE_CHAR, text, 0);
+	if (token == NULL)
+		return A_MEM_ERR;
+	if (is_quantifier == A_BRACES)
+		return a_parse_braces(reg_exp + 1, l, token);
+	a_add_token(token, l);
+	return (is_quantifier == A_CHAR) ? a_check_here(reg_exp + 1, l) : a_check_here(reg_exp + 2, l);
+}
+
+int a_str_to_int(char *s)
+{
+	int res = 0;
+	while (*s != '\0') {
+		res += *s++ - 48;
+		res *= 10;
+	}
+	res /= 10;
+	return res;
+}
+
+int a_is_digit(char c)
+{
+	return (c >= '0' && c <= '9') ? 1 : 0;
+}
+
+unsigned char a_parse_braces(char *reg_exp, a_token_list *l, a_reg_exp_token *t)
+{
+	a_re_range ranges;
+	int range;
+	char num[10];
+	unsigned char i = 0;
+	while (*reg_exp == ' ' || *reg_exp == '\t')
+		reg_exp++;
+	while (a_is_digit(*reg_exp))
+		num[i++] = *reg_exp++;
+	while (*reg_exp == ' ' || *reg_exp == '\t')
+		reg_exp++;
+	if (*reg_exp != ',')
+		return A_INVALID_RE;
+	num[i] = '\0';
+	range = a_str_to_int(num);	
+	if (range == 0)
+		ranges.min = -1;
+	else
+		ranges.min = range;
+	reg_exp++;
+	i = 0;
+	while (*reg_exp == ' ' || *reg_exp == '\t')
+		reg_exp++;
+	while (a_is_digit(*reg_exp))
+		num[i++] = *reg_exp++;
+	while (*reg_exp == ' ' || *reg_exp == '\t')
+		reg_exp++;
+	if (*reg_exp != '}')
+		return A_INVALID_RE;
+	num[i] = '\0';
+	range = a_str_to_int(num);	
+	if (range == 0)
+		ranges.max = -1;
+	else
+		ranges.max = range;
+	t->a_braces_range = ranges;
+	a_add_token(t, l);
+	return a_check_here(reg_exp + 1, l);
+}
+
+unsigned char a_is_quantifier(char c)
+{
+	switch(c) {
+	case '*':
+		return A_STAR;
+		break;
+	case '+':
+		return A_PLUS;
+		break;
+	case '{':
+		return A_BRACES;
+		break;
+	case '?':
+		return A_QUESTION;
+		break;	
+	}
+	return A_CHAR;
 }
 
 unsigned char a_check_cir_flex(char *reg_exp, a_token_list *l)
@@ -35,11 +128,10 @@ unsigned char a_escape_token(char *reg_exp, a_token_list *l)
 	a_reg_exp_token *token;
 	if (*reg_exp == '\0')
 		return A_INVALID_RE;
-	if (*reg_exp == '\\') {
+	if (*reg_exp == '\\')
 		text.a_char = '\\';
-	} else {
+	else
 		text.a_char = *reg_exp;
-	}
 	token = a_gen_token(A_ESCAPE, RE_CHAR_TYPE_CHAR, text, 0);
 	if (token == NULL)
 		return A_MEM_ERR;
