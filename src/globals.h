@@ -6,6 +6,6 @@
 
 
 enum a_re_quantifiers{A_CHAR, A_STAR, A_ESCAPE, A_PLUS, A_BRACES, A_DOLLAR, A_CIR_FLEX};
-enum a_errors{A_NO_ERR, A_ZERO_ESCAPE, A_MEM_ERR};
+enum a_errors{A_NO_ERR, A_INVALID_RE, A_MEM_ERR};
 
 #endif
