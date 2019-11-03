@@ -51,13 +51,13 @@ unsigned char a_add_token(a_reg_exp_token *t, a_token_list *l)
 	return A_NO_ERR;
 }
 
-a_reg_exp_token * a_gen_token(int q, unsigned char type, a_char_token c_token, unsigned char is_negated)
+a_reg_exp_token * a_gen_token(int q, unsigned char type, a_re_text c_token, unsigned char is_negated)
 {
 	a_reg_exp_token *token = malloc(sizeof(a_reg_exp_token));
 	if (token == NULL)
 		return NULL;
 	token->a_quantifier = q;
-	token->a_char_token_type = type;
+	token->a_re_text_type = type;
 	token->a_text = c_token;
 	token->a_is_negated = is_negated; 
 	return token;

@@ -31,7 +31,7 @@ unsigned char a_check_cir_flex(char *reg_exp, a_token_list *l)
 
 unsigned char a_escape_token(char *reg_exp, a_token_list *l)
 {
-	a_char_token text;
+	a_re_text text;
 	a_reg_exp_token *token;
 	if (*reg_exp == '\0')
 		return A_INVALID_RE;
@@ -49,7 +49,7 @@ unsigned char a_escape_token(char *reg_exp, a_token_list *l)
 
 unsigned char a_generic_token(char *reg_exp, unsigned char token_type, a_token_list *l)
 {
-	a_char_token text;
+	a_re_text text;
 	a_reg_exp_token *token;
 	if (token_type == A_CHAR)
 		text.a_char = *reg_exp;	
