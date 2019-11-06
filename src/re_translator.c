@@ -55,8 +55,8 @@ char * a_find_closing_paren(char *reg_exp)
 {
 	unsigned int nested = 0;
 	while (*reg_exp != '\0') {
-		if (*reg_exp++ == '\\' && (*reg_exp == ')' || *reg_exp == '(')) {
-			reg_exp++;	
+		if (*reg_exp == '\\' && (*(reg_exp + 1) == ')' || *(reg_exp + 1) == '(')) {
+			reg_exp += 2;	
 			continue;
 		}
 		if (*reg_exp == ')') {
