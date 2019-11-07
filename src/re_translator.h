@@ -13,6 +13,7 @@ unsigned char a_char_token(char *reg_exp, a_token_list *l);
 unsigned char a_is_quantifier(char c);
 unsigned char a_parse_braces(char *reg_exp, a_token_list *l, a_reg_exp_token *t);
 unsigned char a_parse_parens(char *reg_exp, a_token_list *l);
+unsigned char a_parse_brackets(char *reg_exp, a_token_list *l);
 int a_str_to_int(char *s);
 int a_is_digit(char c);
 char * a_find_closing_paren(char *reg_exp);

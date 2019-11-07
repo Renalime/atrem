@@ -25,6 +25,13 @@ unsigned char a_check_here(char *reg_exp, a_token_list *l)
 	return A_INVALID_RE;
 }
 
+unsigned char a_parse_brackets(char *reg_exp, a_token_list *l)
+{
+	a_re_text text;
+	a_reg_exp_token *token;
+	unsigned char is_quantifier;
+}
+
 unsigned char a_parse_parens(char *reg_exp, a_token_list *l)
 {
 	a_re_text text;

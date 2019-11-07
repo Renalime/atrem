@@ -33,10 +33,7 @@ void a_rm_list(a_token_list *l)
 a_reg_exp_token * a_get_next_token(a_token_list *l)
 {
 	l->current = l->current->next;
-	if (l->current != NULL)
-		return l->current->a_token; 
-	else
-		return NULL;
+	return l->current->a_token; 
 }
 
 unsigned char a_add_token(a_reg_exp_token *t, a_token_list *l)
