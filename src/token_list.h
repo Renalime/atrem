@@ -1,6 +1,8 @@
 #ifndef __TOKEN_LIST_H
 #define __TOKEN_LIST_H
 
+#include "cc_token_list.h"
+
 /* A temporary workaround for having a pointer to a list in the 'a_re_text' structure */
 
 struct a_token_list;
@@ -9,8 +11,8 @@ typedef struct a_token_list a_token_list;
 
 typedef union {
 	char a_char;
-	char *a_str;
 	a_token_list *a_l;
+	a_cc_token_list *a_cc_l;
 }a_re_text;
 
 typedef struct {

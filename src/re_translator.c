@@ -2,12 +2,6 @@
 #include <stdlib.h>
 #include "globals.h"
 
-/* 
-- Try to validate the list without the additional procedure (for dollar, you can check for the end of the reg_exp;
-- Split handling of quantifiers and special cases into two differenet procedures.
-- Write a function that checks for an appropriate character in the regex.
-*/
-
 unsigned char a_check_here(char *reg_exp, a_token_list *l)
 {
 	if (*reg_exp == '\0')
@@ -25,12 +19,140 @@ unsigned char a_check_here(char *reg_exp, a_token_list *l)
 	return A_INVALID_RE;
 }
 
+/*unsigned char a_check_here_cc(char *reg_exp, a_cc_token_list *l) {
+	if (*reg_exp == ']')
+		return reg_exp + 1;
+	if (*reg_exp == '-')
+		
+}*/
+
 unsigned char a_parse_brackets(char *reg_exp, a_token_list *l)
 {
 	a_re_text text;
 	a_reg_exp_token *token;
 	unsigned char is_quantifier;
+	a_cc_token_list *list = a_init_cc_token_list();
+	a_cc_token *cc_token;
+	a_cc_char cc_char;
+	a_cc_range cc_range;
+	unsigned char is_negated = 0;
+	char class[7];
+	unsigned int i;
+	unsigned char is_class;
+//	unsigned char cc_ret;
+	if (list == NULL)
+		return A_MEM_ERR; 	
+	if (*reg_exp == '^') {
+		is_negated = 1;	
+		if (*(reg_exp + 1) == '-' || *(reg_exp + 1) == ']') {
+			cc_char.a_char = *(reg_exp + 1);
+			cc_token = a_cc_gen_token(A_CHAR, cc_char);
+			if (cc_token == NULL)
+				return A_MEM_ERR;
+			a_add_cc_token(cc_token, list);
+			reg_exp += 2;
+		}
+	} else if (*reg_exp == '-' || *reg_exp == ']') {
+		cc_char.a_char = *(reg_exp);
+		cc_token = a_cc_gen_token(A_CHAR, cc_char);
+		if (cc_token == NULL)
+			return A_MEM_ERR;
+		a_add_cc_token(cc_token, list);
+		reg_exp++;
+	}
+	while (*reg_exp != ']') {
+		if ((*reg_exp == '[' && *(reg_exp + 1) != ':') || *reg_exp == '^' || *reg_exp == '\0' || *reg_exp == '\\')
+			return A_INVALID_RE;
+		if (*reg_exp == '[' && *(reg_exp + 1) == ':') {
+			reg_exp += 2;
+			for (i = 0; i < 6 && *reg_exp != ':' && *reg_exp != '\0'; i++, reg_exp++) { // i < 6 : because 'xdigit' is the longest possible class word.
+				class[i] = *reg_exp;
+			}
+			if (*reg_exp == '\0' || *reg_exp != ':' || *(reg_exp + 1) != ']')
+				return A_INVALID_RE;
+			class[i] = '\0';
+			is_class = a_is_class(class);
+			if (!is_class) {
+				return A_INVALID_RE; 
+			} else {
+				if (!a_add_class_word(is_class, list))
+					return A_INVALID_RE;
+			}
+			reg_exp += 2;
+			continue;
+		}
+		if (*reg_exp == '-') {
+			if (*(reg_exp + 1) == ']') {
+				cc_char.a_char = *(reg_exp);
+				cc_token = a_cc_gen_token(A_CHAR, cc_char);
+				a_add_cc_token(cc_token, list);
+				reg_exp++;
+			} else {
+				if (*(reg_exp - 1) > *(reg_exp + 1)) {
+					return A_INVALID_RE;
+				} else {
+					cc_char.a_range.min = *(reg_exp - 1);
+					cc_char.a_range.max = *(reg_exp + 1);
+					cc_token = a_cc_gen_token(A_RANGE, cc_char);
+					reg_exp += 2;
+				}
+			}
+			continue;
+		}
+		cc_char.a_char = *(reg_exp);
+		cc_token = a_cc_gen_token(A_CHAR, cc_char);
+		a_add_cc_token(cc_token, list);
+		reg_exp++;
+	}
 }
+
+unsigned char a_add_class_word(unsigned char type, a_cc_token_list *l)
+{
+
+}
+
+unsigned char a_str_is_equal(char *s1, char *s2)
+{
+	while (*s1 && (*s1++ == *s2++));
+	if (*s1 == '\0' && *s2 == '\0')
+		return 1;
+	else
+		return 0;
+}
+
+unsigned char a_is_class(char *s)
+{
+	char *alnum_str = "alnum";
+	char *alpha_str = "alpha";
+	char *blank_str = "blank";
+	char *cntrl_str = "cntrl";
+	char *digit_str = "digit";
+	char *graph_str = "graph";
+	char *lower_str = "lower";
+	char *print_str = "print";
+	char *punct_str = "punct";
+	char *space_str = "space";
+	char *upper_str = "upper";
+	char *xdigit_str = "xdigit";
+	char *tmp = s;
+	if (*s == 'a') {
+		s++;
+		if (*s == 'l') {
+			s++;
+			if (a_str_is_equal(s, alnum_str + 2))
+				return A_CC_ALNUM;
+			
+			if (a_str_is_equal(s, alpha_str + 2))
+				return A_CC_ALPHA;
+		}
+	}
+	return 0;
+}
+
+/*unsigned char a_cc_parse_hyphen(char *reg_exp, a_cc_token_list *l)
+{
+	if (*(reg_exp + 1) == ']'
+}*/
 
 unsigned char a_parse_parens(char *reg_exp, a_token_list *l)
 {
