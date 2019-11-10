@@ -134,7 +134,6 @@ unsigned char a_is_class(char *s)
 	char *space_str = "space";
 	char *upper_str = "upper";
 	char *xdigit_str = "xdigit";
-	char *tmp = s;
 	if (*s == 'a') {
 		s++;
 		if (*s == 'l') {
@@ -145,8 +144,51 @@ unsigned char a_is_class(char *s)
 			if (a_str_is_equal(s, alpha_str + 2))
 				return A_CC_ALPHA;
 		}
+	} else if (*s == 'b') {
+		s++;
+		if (a_str_is_equal(s, blank_str + 1))
+			return A_CC_BLANK;
+	} else if (*s == 'c') {
+		s++;
+		if (a_str_is_equal(s, cntrl_str + 1))
+			return A_CC_CNTRL;
+	} else if (*s == 'd') {
+		s++;
+		if (a_str_is_equal(s, digit_str + 1))
+			return A_CC_DIGIT;
+	} else if (*s == 'g') {
+		s++;
+		if (a_str_is_equal(s, graph_str + 1))
+			return A_CC_GRAPH;
+	} else if (*s == 'l') {
+		s++;
+		if (a_str_is_equal(s, lower_str + 1))
+			return A_CC_LOWER;
+	} else if (*s == 'p') {
+		s++;
+		if (*s == 'r') {
+			s++;
+			if (a_str_is_equal(s, print_str + 2))
+				return A_CC_PRINT;
+		} else if (*s == 'u') {
+			s++;
+			if (a_str_is_equal(s, punct_str + 2))
+				return A_CC_PUNCT;
+		}
+	} else if (*s == 's') {
+		s++;
+		if (a_str_is_equal(s, space_str + 1))
+			return A_CC_SPACE;
+	} else if (*s == 'u') {
+		s++;
+		if (a_str_is_equal(s, upper_str + 1))
+			return A_CC_UPPER;
+	} else if (*s == 'x') {
+		s++;
+		if (a_str_is_equal(s, xdigit_str + 1))
+			return A_CC_XDIGIT;
 	}
-	return 0;
+	return A_CC_ERR;
 }
 
 /*unsigned char a_cc_parse_hyphen(char *reg_exp, a_cc_token_list *l)
