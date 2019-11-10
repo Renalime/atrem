@@ -108,7 +108,35 @@ unsigned char a_parse_brackets(char *reg_exp, a_token_list *l)
 
 unsigned char a_add_class_word(unsigned char type, a_cc_token_list *l)
 {
-
+	switch (type) {
+	case A_CC_ALNUM:
+		break;
+	case A_CC_ALPHA:
+		break;
+	case A_CC_BLANK:
+		break;
+	case A_CC_CNTRL:
+		break;
+	case A_CC_DIGIT:
+		break;
+	case A_CC_GRAPH:
+		break;
+	case A_CC_LOWER:
+		break;
+	case A_CC_PRINT:
+		break;
+	case A_CC_PUNCT:
+		break;
+	case A_CC_SPACE:
+		break;
+	case A_CC_UPPER:
+		break;
+	case A_CC_XDIGIT:
+		break;
+	default:
+		return A_CC_ERR;
+	}
+	return type;
 }
 
 unsigned char a_str_is_equal(char *s1, char *s2)
