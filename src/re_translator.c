@@ -165,6 +165,16 @@ unsigned char a_add_cntrl_word(a_cc_token_list *l)
 	return A_NO_ERR;
 }
 
+unsigned char a_add_digit_word(a_cc_token_list *l)
+{
+	a_cc_char cc_char;
+	cc_char.a_range.min = '0';
+	cc_char.a_range.max = '9';
+	a_cc_token *token = a_cc_gen_token(A_RANGE, cc_char);
+	A_ASSERT_CC_ADD(token, l);
+	return A_NO_ERR;
+}
+
 unsigned char a_add_class_word(unsigned char type, a_cc_token_list *l)
 {
 	switch (type) {
