@@ -75,8 +75,8 @@ unsigned char a_parse_brackets(char *reg_exp, a_token_list *l)
 			if (!is_class) {
 				return A_INVALID_RE; 
 			} else {
-				if (!a_add_class_word(is_class, list))
-					return A_INVALID_RE;
+				if (a_add_class_word(is_class, list) != A_NO_ERR)
+					return A_MEM_ERR;
 			}
 			reg_exp += 2;
 			continue;
@@ -106,10 +106,44 @@ unsigned char a_parse_brackets(char *reg_exp, a_token_list *l)
 	}
 }
 
+/* Make a_add_cc_token return either NULL or pointer */
+
+unsigned char a_add_alnum_word(a_cc_token_list *l)
+{
+	unsigned char add_ret;
+	a_cc_char cc_char;
+	cc_char.a_range.min = 'A';
+	cc_char.a_range.max = 'Z';
+	a_cc_token *token = a_cc_gen_token(A_RANGE, cc_char);
+	if (token == NULL)
+		return A_MEM_ERR;
+	add_ret = a_add_cc_token(token, l);
+	if (add_ret != A_NO_ERR)
+		return add_ret;
+	cc_char.a_range.min = 'a';
+	cc_char.a_range.max = 'z';
+	token = a_cc_gen_token(A_RANGE, cc_char);
+	if (token == NULL)
+		return A_MEM_ERR;
+	add_ret = a_add_cc_token(token, l);
+	if (add_ret != A_NO_ERR)
+		return add_ret;
+	cc_char.a_range.min = '0';
+	cc_char.a_range.max = '9';
+	token = a_cc_gen_token(A_RANGE, cc_char);
+	if (token == NULL)
+		return A_MEM_ERR;
+	add_ret = a_add_cc_token(token, l);
+	if (add_ret != A_NO_ERR)
+		return add_ret;
+	return A_NO_ERR;
+}
+
 unsigned char a_add_class_word(unsigned char type, a_cc_token_list *l)
 {
 	switch (type) {
 	case A_CC_ALNUM:
+		type = a_add_alnum_word(l);
 		break;
 	case A_CC_ALPHA:
 		break;
@@ -133,8 +167,6 @@ unsigned char a_add_class_word(unsigned char type, a_cc_token_list *l)
 		break;
 	case A_CC_XDIGIT:
 		break;
-	default:
-		return A_CC_ERR;
 	}
 	return type;
 }
