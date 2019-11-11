@@ -21,6 +21,7 @@ unsigned char a_add_alpha_word(a_cc_token_list *l);
 unsigned char a_add_blank_word(a_cc_token_list *l);
 unsigned char a_add_cntrl_word(a_cc_token_list *l);
 unsigned char a_add_digit_word(a_cc_token_list *l);
+unsigned char a_add_graph_word(a_cc_token_list *l);
 unsigned char a_is_class(char *s);
 //unsigned char a_cc_parse_hyphen(char *reg_exp, a_token_list *l);
 //char * a_check_here_cc(char *reg_exp, a_cc_token_list *l);
