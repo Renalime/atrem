@@ -106,30 +106,23 @@ unsigned char a_parse_brackets(char *reg_exp, a_token_list *l)
 	}
 }
 
+#define A_ASSERT_CC_ADD(token, l) do { if (token == NULL) { return A_MEM_ERR; } if (a_add_cc_token(token, l) != A_MEM_ERR) { return A_MEM_ERR; } } while(0)
+
 unsigned char a_add_alnum_word(a_cc_token_list *l)
 {
 	a_cc_char cc_char;
 	cc_char.a_range.min = 'A';
 	cc_char.a_range.max = 'Z';
 	a_cc_token *token = a_cc_gen_token(A_RANGE, cc_char);
-	if (token == NULL)
-		return A_MEM_ERR;
-	if (a_add_cc_token(token, l) != A_NO_ERR)
-		return A_MEM_ERR;
+	A_ASSERT_CC_ADD(token, l);
 	cc_char.a_range.min = 'a';
 	cc_char.a_range.max = 'z';
 	token = a_cc_gen_token(A_RANGE, cc_char);
-	if (token == NULL)
-		return A_MEM_ERR;
-	if (a_add_cc_token(token, l) != A_NO_ERR)
-		return A_MEM_ERR;
+	A_ASSERT_CC_ADD(token, l);
 	cc_char.a_range.min = '0';
 	cc_char.a_range.max = '9';
 	token = a_cc_gen_token(A_RANGE, cc_char);
-	if (token == NULL)
-		return A_MEM_ERR;
-	if (a_add_cc_token(token, l) != A_NO_ERR)
-		return A_MEM_ERR;
+	A_ASSERT_CC_ADD(token, l);
 	return A_NO_ERR;
 }
 
@@ -139,17 +132,11 @@ unsigned char a_add_alpha_word(a_cc_token_list *l)
 	cc_char.a_range.min = 'A';
 	cc_char.a_range.max = 'Z';
 	a_cc_token *token = a_cc_gen_token(A_RANGE, cc_char);
-	if (token == NULL)
-		return A_MEM_ERR;
-	if (a_add_cc_token(token, l) != A_NO_ERR)
-		return A_MEM_ERR;
+	A_ASSERT_CC_ADD(token, l);
 	cc_char.a_range.min = 'a';
 	cc_char.a_range.max = 'z';
 	token = a_cc_gen_token(A_RANGE, cc_char);
-	if (token == NULL)
-		return A_MEM_ERR;
-	if (a_add_cc_token(token, l))
-		return A_MEM_ERR;
+	A_ASSERT_CC_ADD(token, l);
 	return A_NO_ERR;
 }
 
@@ -158,16 +145,23 @@ unsigned char a_add_blank_word(a_cc_token_list *l)
 	a_cc_char cc_char;
 	cc_char.a_char = ' ';
 	a_cc_token *token = a_cc_gen_token(A_CHAR, cc_char);
-	if (token == NULL)
-		return A_MEM_ERR;
-	if (a_add_cc_token(token, l) != A_NO_ERR)
-		return A_MEM_ERR;
+	A_ASSERT_CC_ADD(token, l);
 	cc_char.a_char = '\t';
 	token = a_cc_gen_token(A_CHAR, cc_char);
-	if (token == NULL)
-		return A_MEM_ERR;
-	if (a_add_cc_token(token, l) != A_NO_ERR)
-		return A_MEM_ERR;
+	A_ASSERT_CC_ADD(token, l);
+	return A_NO_ERR;
+}
+
+unsigned char a_add_cntrl_word(a_cc_token_list *l)
+{
+	a_cc_char cc_char;
+	cc_char.a_range.min = 0;
+	cc_char.a_range.max = 0x1F;
+	a_cc_token *token = a_cc_gen_token(A_RANGE, cc_char);
+	A_ASSERT_CC_ADD(token, l);
+	cc_char.a_char = 0x7E;
+	token = a_cc_gen_token(A_CHAR, cc_char);
+	A_ASSERT_CC_ADD(token, l);
 	return A_NO_ERR;
 }
 
