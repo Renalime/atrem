@@ -141,7 +141,7 @@ unsigned char a_add_alpha_word(a_cc_token_list *l)
 	a_cc_token *token = a_cc_gen_token(A_RANGE, cc_char);
 	if (token == NULL)
 		return A_MEM_ERR;
-	if (a_add_cc_token(token, l))
+	if (a_add_cc_token(token, l) != A_NO_ERR)
 		return A_MEM_ERR;
 	cc_char.a_range.min = 'a';
 	cc_char.a_range.max = 'z';
@@ -153,6 +153,23 @@ unsigned char a_add_alpha_word(a_cc_token_list *l)
 	return A_NO_ERR;
 }
 
+unsigned char a_add_blank_word(a_cc_token_list *l)
+{
+	a_cc_char cc_char;
+	cc_char.a_char = ' ';
+	a_cc_token *token = a_cc_gen_token(A_CHAR, cc_char);
+	if (token == NULL)
+		return A_MEM_ERR;
+	if (a_add_cc_token(token, l) != A_NO_ERR)
+		return A_MEM_ERR;
+	cc_char.a_char = '\t';
+	token = a_cc_gen_token(A_CHAR, cc_char);
+	if (token == NULL)
+		return A_MEM_ERR;
+	if (a_add_cc_token(token, l) != A_NO_ERR)
+		return A_MEM_ERR;
+	return A_NO_ERR;
+}
 
 unsigned char a_add_class_word(unsigned char type, a_cc_token_list *l)
 {
