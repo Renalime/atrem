@@ -106,6 +106,10 @@ unsigned char a_parse_brackets(char *reg_exp, a_token_list *l)
 	}
 }
 
+/* Try to minimize repeating code unsing either macroses or dedicated functions. */
+
+#define A_CC_ADD_CHAR(token, c, cc_char) do { cc_char.a_char = c; token = a_cc_gen_token(A_CHAR, cc_char); } while(0)
+#define A_CC_ADD_RANGE(token, min_v, max_v, cc_char) do { cc_char.a_range.min = min_v; cc_char.a_range.max = max_v; token = a_cc_gen_token(A_RANGE, cc_char); } while(0)
 #define A_ASSERT_CC_ADD(token, l) do { if (token == NULL) { return A_MEM_ERR; } if (a_add_cc_token(token, l) != A_MEM_ERR) { return A_MEM_ERR; } } while(0)
 
 unsigned char a_add_alnum_word(a_cc_token_list *l)
@@ -185,6 +189,74 @@ unsigned char a_add_graph_word(a_cc_token_list *l)
 	return A_NO_ERR;
 }
 
+unsigned char a_add_lower_word(a_cc_token_list *l)
+{
+	a_cc_char cc_char;
+	a_cc_token *token;
+	A_CC_ADD_RANGE(token, 'a', 'z', cc_char);
+	A_ASSERT_CC_ADD(token, l);
+	return A_NO_ERR;
+}
+
+unsigned char a_add_print_word(a_cc_token_list *l)
+{
+	a_cc_char cc_char;
+	a_cc_token *token;
+	A_CC_ADD_RANGE(token, 0x21, 0x7E, cc_char);
+	A_ASSERT_CC_ADD(token, l);
+	return A_NO_ERR;
+}
+
+unsigned char a_add_punct_word(a_cc_token_list *l)
+{
+	a_cc_char cc_char;
+	a_cc_token *token;
+	A_CC_ADD_RANGE(token, 0x21, 0x2C, cc_char);
+	A_ASSERT_CC_ADD(token, l);
+	A_CC_ADD_RANGE(token, 0x2E, 0x2F, cc_char);
+	A_ASSERT_CC_ADD(token, l);
+	A_CC_ADD_RANGE(token, 0x3A, 0x40, cc_char);
+	A_ASSERT_CC_ADD(token, l);
+	A_CC_ADD_RANGE(token, 0x5B, 0x60, cc_char);
+	A_ASSERT_CC_ADD(token, l);
+	A_CC_ADD_RANGE(token, 0x7B, 0x7E, cc_char);
+	A_ASSERT_CC_ADD(token, l);
+	return A_NO_ERR;
+}
+
+unsigned char a_add_space_word(a_cc_token_list *l)
+{
+	a_cc_char cc_char;
+	a_cc_token *token;
+	A_CC_ADD_RANGE(token, 0x09, 0x0D, cc_char);
+	A_ASSERT_CC_ADD(token, l);
+	A_CC_ADD_CHAR(token, ' ', cc_char);
+	A_ASSERT_CC_ADD(token, l);
+	return A_NO_ERR;
+}
+
+unsigned char a_add_upper_word(a_cc_token_list *l)
+{
+	a_cc_char cc_char;
+	a_cc_token *token;
+	A_CC_ADD_RANGE(token, 'A', 'Z', cc_char);
+	A_ASSERT_CC_ADD(token, l);
+	return A_NO_ERR;
+}
+
+unsigned char a_add_xdigit_word(a_cc_token_list *l)
+{
+	a_cc_char cc_char;
+	a_cc_token *token;
+	A_CC_ADD_RANGE(token, 'A', 'F', cc_char);
+	A_ASSERT_CC_ADD(token, l);
+	A_CC_ADD_RANGE(token, 'a', 'f', cc_char);
+	A_ASSERT_CC_ADD(token, l);
+	A_CC_ADD_RANGE(token, '0', '9', cc_char);
+	A_ASSERT_CC_ADD(token, l);
+	return A_NO_ERR;
+}
+
 unsigned char a_add_class_word(unsigned char type, a_cc_token_list *l)
 {
 	switch (type) {
@@ -192,26 +264,37 @@ unsigned char a_add_class_word(unsigned char type, a_cc_token_list *l)
 		type = a_add_alnum_word(l);
 		break;
 	case A_CC_ALPHA:
+		type = a_add_alpha_word(l);
 		break;
 	case A_CC_BLANK:
+		type = a_add_blank_word(l);
 		break;
 	case A_CC_CNTRL:
+		type = a_add_cntrl_word(l);
 		break;
 	case A_CC_DIGIT:
+		type = a_add_digit_word(l);
 		break;
 	case A_CC_GRAPH:
+		type = a_add_graph_word(l);
 		break;
 	case A_CC_LOWER:
+		type = a_add_lower_word(l);
 		break;
 	case A_CC_PRINT:
+		type = a_add_print_word(l);
 		break;
 	case A_CC_PUNCT:
+		type = a_add_punct_word(l);
 		break;
 	case A_CC_SPACE:
+		type = a_add_space_word(l);
 		break;
 	case A_CC_UPPER:
+		type = a_add_upper_word(l);
 		break;
 	case A_CC_XDIGIT:
+		type = a_add_xdigit_word(l);
 		break;
 	}
 	return type;
