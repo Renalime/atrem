@@ -32,14 +32,14 @@ unsigned char a_parse_brackets(char *reg_exp, a_token_list *l)
 	a_reg_exp_token *token;
 	unsigned char is_quantifier;
 	a_cc_token_list *list = a_init_cc_token_list();
+	if (list != NULL)
+		return A_MEM_ERR;
 	a_cc_token *cc_token;
 	a_cc_char cc_char;
-	a_cc_range cc_range;
 	unsigned char is_negated = 0;
 	char class[7];
 	unsigned int i;
 	unsigned char is_class;
-//	unsigned char cc_ret;
 	if (list == NULL)
 		return A_MEM_ERR; 	
 	if (*reg_exp == '^') {
@@ -104,6 +104,17 @@ unsigned char a_parse_brackets(char *reg_exp, a_token_list *l)
 		a_add_cc_token(cc_token, list);
 		reg_exp++;
 	}
+	reg_exp++;
+	is_quantifier = a_is_quantifier(*reg_exp);
+	text.a_cc_l = list;
+	token = a_gen_token(is_quantifier, RE_CHAR_TYPE_BRACKETS, text, is_negated);
+	if (token == NULL)
+		return A_MEM_ERR;
+	if (is_quantifier == A_BRACES)
+		return a_parse_braces(reg_exp + 1, l, token);
+	if (a_add_token(token, l) != A_NO_ERR)
+		return A_MEM_ERR;
+	return (is_quantifier == A_CHAR) ? a_check_here(reg_exp, l) : a_check_here(reg_exp + 1, l);
 }
 
 /* Try to minimize repeating code unsing either macroses or dedicated functions. */
