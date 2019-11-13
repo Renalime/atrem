@@ -35,9 +35,18 @@ unsigned char a_parse_brackets(char *reg_exp, a_token_list *l)
 	char class[7];
 	unsigned int i;
 	unsigned char is_class;
+	a_tuple_ret ret;
 	if (list == NULL)
 		return A_MEM_ERR; 	
 	if (*reg_exp == '^') {
+		is_negated = 1;
+		reg_exp++;
+	}
+	ret = a_parse_brackets_init(reg_exp, list);	
+	if (ret.ret != A_NO_ERR)
+		return ret.ret;	
+	reg_exp = ret.reg_exp;
+/*	if (*reg_exp == '^') {
 		is_negated = 1;	
 		if (*(reg_exp + 1) == '-' || *(reg_exp + 1) == ']') {
 			cc_char.a_char = *(reg_exp + 1);
@@ -99,7 +108,7 @@ unsigned char a_parse_brackets(char *reg_exp, a_token_list *l)
 		a_add_cc_token(cc_token, list);
 		reg_exp++;
 	}
-	reg_exp++;
+*/
 	is_quantifier = a_is_quantifier(*reg_exp);
 	text.a_cc_l = list;
 	token = a_gen_token(is_quantifier, RE_CHAR_TYPE_BRACKETS, text, is_negated);
@@ -112,6 +121,30 @@ unsigned char a_parse_brackets(char *reg_exp, a_token_list *l)
 	return (is_quantifier == A_CHAR) ? a_check_here(reg_exp, l) : a_check_here(reg_exp + 1, l);
 }
 
+a_tuple_ret a_parse_brackets_init(char *reg_exp, a_cc_token_list *l)
+{
+	a_cc_char cc_char;
+	a_cc_token *token;
+	a_tuple_ret ret;
+	ret.ret = A_MEM_ERR;
+	ret.reg_exp = reg_exp;
+	if (*reg_exp == '-' || *reg_exp == ']') {
+		cc_char.a_char = *reg_exp;
+		if ((token = a_cc_gen_token(A_CHAR, cc_char)) == NULL)
+			return ret;
+		if (a_add_cc_token(token, l) != A_NO_ERR)
+			return ret;
+		reg_exp++;
+	}
+	return a_parse_brackets_check(reg_exp, l);	
+}
+
+a_tuple_ret a_parse_brackets_check(char *reg_exp, a_cc_token_list *l)
+{
+
+}
+
+/* This macroses defined right HERE because they are used in a specific context, particularly in functions that add character classes like [:alnum:], etc. */ 
 
 #define A_CC_ADD_CHAR(token, c, cc_char) do { cc_char.a_char = c; token = a_cc_gen_token(A_CHAR, cc_char); } while(0)
 #define A_CC_ADD_RANGE(token, min_v, max_v, cc_char) do { cc_char.a_range.min = min_v; cc_char.a_range.max = max_v; token = a_cc_gen_token(A_RANGE, cc_char); } while(0)

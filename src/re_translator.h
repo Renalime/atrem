@@ -4,6 +4,13 @@
 #include "token_list.h"
 #include "cc_token_list.h"
 
+/* The next struct is just a convinience for returning the next chacacter to process in a string and at the same time the function exit code. */
+
+typedef struct {
+	char *reg_exp;
+	unsigned char ret;
+}a_tuple_ret;
+
 unsigned char a_re_translate(char *reg_exp);
 unsigned char a_check_here(char *reg_exp, a_token_list *l);
 unsigned char a_check_cir_flex(char *reg_exp, a_token_list *l);
@@ -15,6 +22,8 @@ unsigned char a_is_quantifier(char c);
 unsigned char a_parse_braces(char *reg_exp, a_token_list *l, a_reg_exp_token *t);
 unsigned char a_parse_parens(char *reg_exp, a_token_list *l);
 unsigned char a_parse_brackets(char *reg_exp, a_token_list *l);
+a_tuple_ret a_parse_brackets_init(char *reg_exp, a_cc_token_list *l);
+a_tuple_ret a_parse_brackets_check(char *reg_exp, a_cc_token_list *l);
 unsigned char a_add_class_word(unsigned char type, a_cc_token_list *l);
 unsigned char a_add_alnum_word(a_cc_token_list *l);
 unsigned char a_add_alpha_word(a_cc_token_list *l);
