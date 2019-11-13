@@ -29,12 +29,7 @@ unsigned char a_parse_brackets(char *reg_exp, a_token_list *l)
 	a_cc_token_list *list = a_init_cc_token_list();
 	if (list != NULL)
 		return A_MEM_ERR;
-	a_cc_token *cc_token;
-	a_cc_char cc_char;
 	unsigned char is_negated = 0;
-	char class[7];
-	unsigned int i;
-	unsigned char is_class;
 	a_tuple_ret ret;
 	if (list == NULL)
 		return A_MEM_ERR; 	
@@ -46,69 +41,7 @@ unsigned char a_parse_brackets(char *reg_exp, a_token_list *l)
 	if (ret.ret != A_NO_ERR)
 		return ret.ret;	
 	reg_exp = ret.reg_exp;
-/*	if (*reg_exp == '^') {
-		is_negated = 1;	
-		if (*(reg_exp + 1) == '-' || *(reg_exp + 1) == ']') {
-			cc_char.a_char = *(reg_exp + 1);
-			cc_token = a_cc_gen_token(A_CHAR, cc_char);
-			if (cc_token == NULL)
-				return A_MEM_ERR;
-			a_add_cc_token(cc_token, list);
-			reg_exp += 2;
-		}
-	} else if (*reg_exp == '-' || *reg_exp == ']') {
-		cc_char.a_char = *(reg_exp);
-		cc_token = a_cc_gen_token(A_CHAR, cc_char);
-		if (cc_token == NULL)
-			return A_MEM_ERR;
-		a_add_cc_token(cc_token, list);
-		reg_exp++;
-	}
-	while (*reg_exp != ']') {
-		if ((*reg_exp == '[' && *(reg_exp + 1) != ':') || *reg_exp == '^' || *reg_exp == '\0' || *reg_exp == '\\')
-			return A_INVALID_RE;
-		if (*reg_exp == '[' && *(reg_exp + 1) == ':') {
-			reg_exp += 2;
-			for (i = 0; i < 6 && *reg_exp != ':' && *reg_exp != '\0'; i++, reg_exp++) { // i < 6 : because 'xdigit' is the longest possible class word.
-				class[i] = *reg_exp;
-			}
-			if (*reg_exp == '\0' || *reg_exp != ':' || *(reg_exp + 1) != ']')
-				return A_INVALID_RE;
-			class[i] = '\0';
-			is_class = a_is_class(class);
-			if (!is_class) {
-				return A_INVALID_RE; 
-			} else {
-				if (a_add_class_word(is_class, list) != A_NO_ERR)
-					return A_MEM_ERR;
-			}
-			reg_exp += 2;
-			continue;
-		}
-		if (*reg_exp == '-') {
-			if (*(reg_exp + 1) == ']') {
-				cc_char.a_char = *(reg_exp);
-				cc_token = a_cc_gen_token(A_CHAR, cc_char);
-				a_add_cc_token(cc_token, list);
-				reg_exp++;
-			} else {
-				if (*(reg_exp - 1) > *(reg_exp + 1)) {
-					return A_INVALID_RE;
-				} else {
-					cc_char.a_range.min = *(reg_exp - 1);
-					cc_char.a_range.max = *(reg_exp + 1);
-					cc_token = a_cc_gen_token(A_RANGE, cc_char);
-					reg_exp += 2;
-				}
-			}
-			continue;
-		}
-		cc_char.a_char = *(reg_exp);
-		cc_token = a_cc_gen_token(A_CHAR, cc_char);
-		a_add_cc_token(cc_token, list);
-		reg_exp++;
-	}
-*/
+	reg_exp++;
 	is_quantifier = a_is_quantifier(*reg_exp);
 	text.a_cc_l = list;
 	token = a_gen_token(is_quantifier, RE_CHAR_TYPE_BRACKETS, text, is_negated);
@@ -141,7 +74,80 @@ a_tuple_ret a_parse_brackets_init(char *reg_exp, a_cc_token_list *l)
 
 a_tuple_ret a_parse_brackets_check(char *reg_exp, a_cc_token_list *l)
 {
+	a_tuple_ret ret;
+	ret.reg_exp = reg_exp;
+	ret.ret = A_NO_ERR;
+	if (*reg_exp == ']')
+		return ret;
+	if (*(reg_exp + 1) == '-')
+		return a_parse_brackets_check_hyphen(reg_exp + 1, l);
+	if (*reg_exp == '[' && *(reg_exp + 1) == ':')
+		return a_parse_brackets_check_cc(reg_exp, l);
+	if (*reg_exp != '\0')
+		return a_parse_brackets_check_char(reg_exp, l);
+	ret.ret = A_INVALID_RE;
+	return ret;
+}
 
+a_tuple_ret a_parse_brackets_check_hyphen(char *reg_exp, a_cc_token_list *l)
+{
+	a_tuple_ret ret;
+	a_cc_char cc_char;
+	a_cc_token *token;
+	ret.ret = A_INVALID_RE;
+	ret.reg_exp = reg_exp;
+	if (*(reg_exp + 1) == ']') {
+		return a_parse_brackets_check_char(reg_exp, l);
+	}
+	if (*(reg_exp - 1) > *(reg_exp + 1) || *(reg_exp + 1) == '\0')
+		return ret;
+	cc_char.a_range.min = *(reg_exp - 1);
+	cc_char.a_range.max = *(reg_exp + 1);
+	ret.ret = A_MEM_ERR;
+	if ((token = a_cc_gen_token(A_RANGE, cc_char)) == NULL)
+		return ret;
+	if (a_add_cc_token(token, l) != A_NO_ERR)
+		return ret;
+	return a_parse_brackets_check(reg_exp + 2, l);
+}
+
+a_tuple_ret a_parse_brackets_check_cc(char *reg_exp, a_cc_token_list *l)
+{
+	a_tuple_ret ret;
+	char class[7];
+	unsigned int i;
+	unsigned char is_class;
+	ret.ret = A_INVALID_RE;
+	ret.reg_exp = reg_exp;
+	for (i = 0, reg_exp = reg_exp + 2; i < 6 && *reg_exp != '\0' && *reg_exp != ':'; i++, reg_exp++) {
+		class[i] = *reg_exp;
+	}
+	if (!(*reg_exp == ':' && *(reg_exp + 1) == ']'))
+		return ret;
+	class[i] = '\0';
+	is_class = a_is_class(class);
+	if (!is_class) {
+		return ret;
+	}
+	if (a_add_class_word(is_class, l) == is_class) {
+		return ret;
+	}
+	return a_parse_brackets_check(reg_exp + 2, l);
+}
+
+a_tuple_ret a_parse_brackets_check_char(char *reg_exp, a_cc_token_list *l)
+{
+	a_cc_char cc_char;
+	a_cc_token *token;
+	a_tuple_ret ret;
+	ret.reg_exp = reg_exp;
+	ret.ret = A_MEM_ERR;
+	cc_char.a_char = *reg_exp;
+	if ((token = a_cc_gen_token(A_CHAR, cc_char)) == NULL)
+		return ret;
+	if (a_add_cc_token(token, l) != A_NO_ERR)
+		return ret;
+	return a_parse_brackets_check(reg_exp + 1, l);
 }
 
 /* This macroses defined right HERE because they are used in a specific context, particularly in functions that add character classes like [:alnum:], etc. */ 
