@@ -239,12 +239,31 @@ unsigned char a_is_valid_char(char c)
 }
 */
 
+unsigned char a_generic_token(char *reg_exp, unsigned char type, a_alt_list *al)
+{
+	return A_NO_ERR;
+}
+
+unsigned char a_check_cir_flex(char *reg_exp, a_alt_list *al)
+{
+	if (*reg_exp == '^')
+		return a_generic_token(reg_exp, A_CIR_FLEX, al);
+	else
+		return a_check_here(reg_exp, al);
+}
+
+unsigned char a_check_here(char *reg_exp, a_alt_list *al)
+{
+
+	return A_INVALID_RE;
+}
+
 unsigned char a_re_translate(char *reg_exp, a_alt_list *al)
 {
 	unsigned char ret;
 	a_token_list *l = a_init_list();
 	if (l == NULL)
 		return A_MEM_ERR;
-//	ret = a_check_cir_flex(reg_exp, l);
+	ret = a_check_cir_flex(reg_exp, al);
 	return ret;
 }
