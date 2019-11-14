@@ -3,6 +3,7 @@
 #include "globals.h"
 #include "bracket_parser.h"
 
+/*
 unsigned char a_check_here(char *reg_exp, a_token_list *l)
 {
 	if (*reg_exp == '\0')
@@ -236,6 +237,7 @@ unsigned char a_is_valid_char(char c)
 {
 	return (c != '^' && c != '$' && c != ']' && c != '+' && c != '*') ? 1 : 0;
 }
+*/
 
 unsigned char a_re_translate(char *reg_exp, a_alt_list *al)
 {
@@ -243,6 +245,6 @@ unsigned char a_re_translate(char *reg_exp, a_alt_list *al)
 	a_token_list *l = a_init_list();
 	if (l == NULL)
 		return A_MEM_ERR;
-	ret = a_check_cir_flex(reg_exp, l);
+//	ret = a_check_cir_flex(reg_exp, l);
 	return ret;
 }

@@ -52,3 +52,8 @@ a_token_list * a_get_next_list(a_alt_list *l)
 	l->current = l->current->next;
 	return l->current->l;
 }
+
+a_token_list * a_get_last_list(a_alt_list *l)
+{
+	return l->last->l;
+}
