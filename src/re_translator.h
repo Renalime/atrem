@@ -2,9 +2,9 @@
 #define __COMPILATION_H
 
 #include "token_list.h"
-#include "cc_token_list.h"
+#include "alteration_list.h"
 
-unsigned char a_re_translate(char *reg_exp);
+unsigned char a_re_translate(char *reg_exp, a_alt_list *al);
 unsigned char a_check_here(char *reg_exp, a_token_list *l);
 unsigned char a_check_cir_flex(char *reg_exp, a_token_list *l);
 unsigned char a_escape_token(char *reg_exp, a_token_list *l);

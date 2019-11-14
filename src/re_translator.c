@@ -237,7 +237,7 @@ unsigned char a_is_valid_char(char c)
 	return (c != '^' && c != '$' && c != ']' && c != '+' && c != '*') ? 1 : 0;
 }
 
-unsigned char a_re_translate(char *reg_exp)
+unsigned char a_re_translate(char *reg_exp, a_alt_list *al)
 {
 	unsigned char ret;
 	a_token_list *l = a_init_list();

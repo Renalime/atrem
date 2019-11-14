@@ -19,7 +19,9 @@ a_token_list * a_init_list()
 
 void a_rm_list(a_token_list *l)
 {
-	a_token_node *it = l->head->next;
+	if (l == NULL)
+		return;
+	a_token_node *it = l->head;
 	a_token_node *temp;
 	while (it != NULL) {
 		temp = it;
@@ -27,7 +29,6 @@ void a_rm_list(a_token_list *l)
 		free(temp->a_token);
 		free(temp);
 	}
-	free(l->head);
 }
 
 a_reg_exp_token * a_get_next_token(a_token_list *l)

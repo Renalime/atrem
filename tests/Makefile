@@ -1,6 +1,6 @@
 CFLAGS = -pedantic -Wall
 LDLIBS = -lm
-OBJECTS = main.o functionality_tests.o unit_tests.o matcher.o re_translator.o token_list.o cc_token_list.o bracket_parser.o
+OBJECTS = main.o functionality_tests.o unit_tests.o matcher.o re_translator.o token_list.o cc_token_list.o bracket_parser.o alteration_list.o
 VPATH = ../src
 
 .PHONY: clean all
@@ -24,6 +24,8 @@ token_list.o: token_list.h token_list.c
 cc_token_list.o: cc_token_list.h cc_token_list.c globals.h
 
 bracket_parser.o: bracket_parser.h bracket_parser.c globals.h
+
+alteration_list.o: alteration_list.h alteration_list.c globals.h token_list.h
 
 clean:
 	-rm *.o

@@ -3,11 +3,8 @@
 
 #include "cc_token_list.h"
 
-/* A temporary workaround for having a pointer to a list in the 'a_re_text' structure */
-
-struct a_token_list;
-
 typedef struct a_token_list a_token_list;
+typedef struct a_token_node a_token_node;
 
 typedef union {
 	char a_char;
@@ -27,8 +24,6 @@ typedef struct {
 	a_re_text a_text;
 	unsigned char a_is_negated;
 }a_reg_exp_token;
-
-typedef struct a_token_node a_token_node;
 
 struct a_token_node{
 	a_reg_exp_token *a_token;
