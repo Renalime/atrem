@@ -174,25 +174,6 @@ unsigned char a_parse_braces(char *reg_exp, a_token_list *l, a_reg_exp_token *t)
 	return a_check_here(reg_exp + 1, l);
 }
 
-unsigned char a_is_quantifier(char c)
-{
-	switch(c) {
-	case '*':
-		return A_STAR;
-		break;
-	case '+':
-		return A_PLUS;
-		break;
-	case '{':
-		return A_BRACES;
-		break;
-	case '?':
-		return A_QUESTION;
-		break;	
-	}
-	return A_CHAR;
-}
-
 unsigned char a_check_cir_flex(char *reg_exp, a_token_list *l)
 {
 	if (*reg_exp == '^')
@@ -232,16 +213,68 @@ unsigned char a_generic_token(char *reg_exp, unsigned char token_type, a_token_l
 	a_add_token(token, l);
 	return a_check_here(reg_exp + 1, l);
 }
+*/
+
+unsigned char a_is_quantifier(char c)
+{
+	switch(c) {
+	case '*':
+		return A_STAR;
+		break;
+	case '+':
+		return A_PLUS;
+		break;
+	case '{':
+		return A_BRACES;
+		break;
+	case '?':
+		return A_QUESTION;
+		break;	
+	}
+	return A_CHAR;
+}
+
+
+unsigned char a_parse_braces(char *reg_exp, a_alt_list *al, a_reg_exp_token *t)
+{
+
+}
+
+unsigned char a_char_token(char *reg_exp, a_alt_list *al)
+{
+	a_re_text text;
+	a_reg_exp_token *token;	
+	unsigned char is_quantifier = a_is_quantifier(*(reg_exp + 1));
+	text.a_char = *reg_exp;		
+	token = a_gen_token(is_quantifier, RE_CHAR_TYPE_CHAR, text, 0);
+	if (token == NULL)
+		return A_MEM_ERR;
+	if (is_quantifier == A_BRACES)
+		return a_parse_braces(reg_exp + 1, al, token);
+	a_add_token(token, a_get_last_list(al));
+	return (is_quantifier == A_CHAR) ? a_check_here(reg_exp + 1, al) : a_check_here(reg_exp + 2, al);
+
+}
 
 unsigned char a_is_valid_char(char c)
 {
 	return (c != '^' && c != '$' && c != ']' && c != '+' && c != '*') ? 1 : 0;
 }
-*/
+
 
 unsigned char a_generic_token(char *reg_exp, unsigned char type, a_alt_list *al)
 {
-	return A_NO_ERR;
+	a_re_text text;
+	a_reg_exp_token *token;
+	if (type == A_CHAR)
+		text.a_char = *reg_exp;
+	else
+		text.a_char = 0;
+	token = a_gen_token(type, RE_CHAR_TYPE_CHAR, text, 0);
+	if (token == NULL)
+		return A_MEM_ERR;
+	a_add_token(token, a_get_last_list(al));
+	return a_check_here(reg_exp + 1, al);
 }
 
 unsigned char a_check_cir_flex(char *reg_exp, a_alt_list *al)
@@ -254,6 +287,12 @@ unsigned char a_check_cir_flex(char *reg_exp, a_alt_list *al)
 
 unsigned char a_check_here(char *reg_exp, a_alt_list *al)
 {
+	if (*reg_exp == '\0')
+		return A_NO_ERR;
+	if (*reg_exp == ')')
+		return A_NESTED;
+	if (a_is_valid_char(*reg_exp))
+		return a_char_token(reg_exp, al);
 
 	return A_INVALID_RE;
 }
