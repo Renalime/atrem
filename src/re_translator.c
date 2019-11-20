@@ -201,6 +201,25 @@ unsigned char a_generic_token(char *reg_exp, unsigned char token_type, a_token_l
 }
 */
 
+unsigned char a_escape_token(char *reg_exp, a_alt_list *al)
+{
+	if (*reg_exp == '\0')
+		return A_INVALID_RE;
+/*	if (*reg_exp == '\\')
+		text.a_char = '\\';
+	else
+		text.a_char = *reg_exp;
+*/
+/*	token = a_gen_token(A_ESCAPE, RE_CHAR_TYPE_CHAR, text, 0);
+	if (token == NULL)
+		return A_MEM_ERR;
+	a_add_token(token, l);
+	return a_check_here(reg_exp + 1, l);
+*/
+	return a_char_token(reg_exp, al);
+}
+
+
 int a_str_to_int(char *s)
 {
 	int res = 0;
@@ -329,6 +348,8 @@ unsigned char a_check_here(char *reg_exp, a_alt_list *al)
 		return A_NO_ERR;
 	if (*reg_exp == ')')
 		return A_NESTED;
+	if (*reg_exp == '\\' && *(reg_exp + 1) != '\0')
+		return a_char_token(reg_exp + 1, al); 
 	if (a_is_valid_char(*reg_exp))
 		return a_char_token(reg_exp, al);
 
