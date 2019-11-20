@@ -117,21 +117,7 @@ unsigned char a_char_token(char *reg_exp, a_token_list *l)
 	return (is_quantifier == A_CHAR) ? a_check_here(reg_exp + 1, l) : a_check_here(reg_exp + 2, l);
 }
 
-int a_str_to_int(char *s)
-{
-	int res = 0;
-	while (*s != '\0') {
-		res += *s++ - 48;
-		res *= 10;
-	}
-	res /= 10;
-	return res;
-}
 
-int a_is_digit(char c)
-{
-	return (c >= '0' && c <= '9') ? 1 : 0;
-}
 
 unsigned char a_parse_braces(char *reg_exp, a_token_list *l, a_reg_exp_token *t)
 {
@@ -215,6 +201,22 @@ unsigned char a_generic_token(char *reg_exp, unsigned char token_type, a_token_l
 }
 */
 
+int a_str_to_int(char *s)
+{
+	int res = 0;
+	while (*s != '\0') {
+		res += *s++ - 48;
+		res *= 10;
+	}
+	res /= 10;
+	return res;
+}
+
+int a_is_digit(char c)
+{
+	return (c >= '0' && c <= '9') ? 1 : 0;
+}
+
 unsigned char a_is_quantifier(char c)
 {
 	switch(c) {
@@ -237,7 +239,43 @@ unsigned char a_is_quantifier(char c)
 
 unsigned char a_parse_braces(char *reg_exp, a_alt_list *al, a_reg_exp_token *t)
 {
-
+	a_re_range ranges;
+	int range;
+	char num[10];
+	unsigned char i = 0;
+	while (*reg_exp == ' ' || *reg_exp == '\t')
+		reg_exp++;
+	while (a_is_digit(*reg_exp))
+		num[i++] = *reg_exp++;
+	while (*reg_exp == ' ' || *reg_exp == '\t')
+		reg_exp++;
+	if (*reg_exp != ',')
+		return A_INVALID_RE;
+	num[i] = '\0';
+	range = a_str_to_int(num);	
+	if (range == 0)
+		ranges.min = -1;
+	else
+		ranges.min = range;
+	reg_exp++;
+	i = 0;
+	while (*reg_exp == ' ' || *reg_exp == '\t')
+		reg_exp++;
+	while (a_is_digit(*reg_exp))
+		num[i++] = *reg_exp++;
+	while (*reg_exp == ' ' || *reg_exp == '\t')
+		reg_exp++;
+	if (*reg_exp != '}')
+		return A_INVALID_RE;
+	num[i] = '\0';
+	range = a_str_to_int(num);	
+	if (range == 0)
+		ranges.max = -1;
+	else
+		ranges.max = range;
+	t->a_braces_range = ranges;
+	a_add_token(t, a_get_last_list(al));
+	return a_check_here(reg_exp + 1, al);
 }
 
 unsigned char a_char_token(char *reg_exp, a_alt_list *al)
