@@ -64,6 +64,7 @@ int main(int argc, char **argv){
 	if (po.show_help == 1) {
 		return 0;
 	}
+	do_token_list_tests();
 	/*
 	if (po.func_tests) {
 		test_functionality(po.verbose_mode);
