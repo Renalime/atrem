@@ -1,31 +1,33 @@
-CFLAGS = -pedantic -Wall
+CFLAGS = -pedantic -Wall -O3
 LDLIBS = -lm
-OBJECTS = main.o functionality_tests.o unit_tests.o matcher.o re_translator.o token_list.o cc_token_list.o bracket_parser.o alteration_list.o
-VPATH = ../src
+SRCS = main.c
+OBJS = $(SRCS:%.c=%.o)
+DEPS = $(SRCS:%.c=%.d)
+DEPS_DIR = dependencies
+BIN_DIR ?= ../bin
+DEST_DIR ?= $(BIN_DIR)/tests
+vpath %.o $(BIN_DIR)
+vpath %.o $(DEST_DIR)
+vpath %.d $(DEPS_DIR)
 
-.PHONY: clean all
+.PHONY: clean all clean_dep clean_obj move
 
-all: main
+all: $(DEPS) $(OBJS) main move
+main: $(OBJS)
 
-main: $(OBJECTS)
+%.d: %.c
+	mkdir -p $(DEPS_DIR)
+	$(CC) $(CFLAGS) -MM $< -MF $(DEPS_DIR)/$@
 
-main.o: main.c
+-include $(DEPS_DIR)/*.d
 
-functionality_tests.o: functionality_tests.c functionality_tests.h matcher.c matcher.h
+move:
+	mkdir -p $(DEST_DIR)
+	@-mv *.o $(DEST_DIR) 2>/dev/null | :
+	@-mv main $(DEST_DIR) 2>/dev/null | :
 
-unit_tests.o: unit_tests.c unit_tests.h matcher.c matcher.h test_framework.h
-
-matcher.o: matcher.c matcher.h
-
-re_translator.o: re_translator.c re_translator.h token_list.h bracket_parser.h
-
-token_list.o: token_list.h token_list.c
-
-cc_token_list.o: cc_token_list.h cc_token_list.c globals.h
-
-bracket_parser.o: bracket_parser.h bracket_parser.c globals.h
-
-alteration_list.o: alteration_list.h alteration_list.c globals.h token_list.h
-
-clean:
-	-rm *.o
+clean_obj:
+	@-rm $(OBJS:%.o=${DEST_DIR}/%.o)
+clean_dep:
+	@-rm -r $(DEPS_DIR)
+clean: clean_dep clean_obj

@@ -1,5 +1,3 @@
-#include "functionality_tests.h"
-#include "unit_tests.h"
 #include <stdio.h>
 
 void parse_cmd_options(int argc, char **argv);
@@ -65,11 +63,13 @@ int main(int argc, char **argv){
 	if (po.show_help == 1) {
 		return 0;
 	}
+	/*
 	if (po.func_tests) {
 		test_functionality(po.verbose_mode);
 	}
 	if (po.unit_tests) {
 		test_units(po.verbose_mode);
 	}
+	*/
 	return 0;
 }
