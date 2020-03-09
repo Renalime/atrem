@@ -1,11 +1,7 @@
-# ignore any object files
-
-*.o
-
-# ignore any library files
-
-*.a
-
 # ignore an executable for the tests
 
-main
+bin
+
+# ignore dependencies
+
+**/dependencies
