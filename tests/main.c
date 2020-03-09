@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include "token_list_tests.h"
 
 void parse_cmd_options(int argc, char **argv);
 void show_help();
