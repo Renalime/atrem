@@ -24,6 +24,7 @@ matcher.o: matcher.c matcher.h
 tests:
 	$(MAKE) -C $(SRC_DIR)
 	$(MAKE) -C $(TESTS_DIR)
+	#$(CC) $(CFLAGS) $(BIN_DIR)/tests/* $(BIN_DIR)/* -o $(BIN_DIR)/test
 tests_clean:
 	@-rm -r $(BIN_DIR)
 

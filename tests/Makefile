@@ -1,8 +1,10 @@
 CFLAGS = -pedantic -Wall -O3
 LDLIBS = -lm
-SRCS = main.c
+TEST_SRCS = main.c token_list_tests.c
+TEST_OBJS = $(TEST_SRCS:%.c=%.o)
+DEPS = $(TEST_SRCS:%.c=%.d)
+SRCS = alteration_list.c bracket_parser.c cc_token_list.c re_translator.c token_list.c
 OBJS = $(SRCS:%.c=%.o)
-DEPS = $(SRCS:%.c=%.d)
 DEPS_DIR = dependencies
 BIN_DIR ?= ../bin
 DEST_DIR ?= $(BIN_DIR)/tests
@@ -12,8 +14,8 @@ vpath %.d $(DEPS_DIR)
 
 .PHONY: clean all clean_dep clean_obj move
 
-all: $(DEPS) $(OBJS) main move
-main: $(OBJS)
+all: $(DEPS) $(TEST_OBJS) main move
+main: $(TEST_OBJS) $(OBJS:%.o=${BIN_DIR}/%.o)
 
 %.d: %.c
 	mkdir -p $(DEPS_DIR)
@@ -27,7 +29,7 @@ move:
 	@-mv main $(DEST_DIR) 2>/dev/null | :
 
 clean_obj:
-	@-rm $(OBJS:%.o=${DEST_DIR}/%.o)
+	@-rm $(TEST_OBJS:%.o=${DEST_DIR}/%.o)
 clean_dep:
 	@-rm -r $(DEPS_DIR)
 clean: clean_dep clean_obj
