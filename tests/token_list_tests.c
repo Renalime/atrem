@@ -5,8 +5,6 @@
 
 unsigned int test_count;
 
-static int inset_token(a_token_list *l);
-
 static int test_all();
 static int test_init_list();
 static int test_gen_token();

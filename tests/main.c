@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include "token_list_tests.h"
+#include "alteration_list_tests.h"
 
 void parse_cmd_options(int argc, char **argv);
 void show_help();
@@ -65,6 +66,7 @@ int main(int argc, char **argv){
 		return 0;
 	}
 	do_token_list_tests();
+	do_alteration_list_tests();
 	/*
 	if (po.func_tests) {
 		test_functionality(po.verbose_mode);
