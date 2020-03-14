@@ -1,5 +1,5 @@
 CFLAGS ?= -pedantic -Wall -O3
-SRCS =
+SRCS = print_ir.c
 OBJS = $(SRCS:%.c=%.o)
 DEPS = $(SRCS:%.c=%.d)
 DEPS_DIR = dependencies
