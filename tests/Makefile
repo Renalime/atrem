@@ -8,13 +8,14 @@ OBJS = $(SRCS:%.c=%.o)
 DEPS_DIR = dependencies
 BIN_DIR ?= ../bin
 DEST_DIR ?= $(BIN_DIR)/tests
+IRVIZ_DIR ?= irviz
 vpath %.o $(BIN_DIR)
 vpath %.o $(DEST_DIR)
 vpath %.d $(DEPS_DIR)
 
-.PHONY: clean all clean_dep clean_obj move
+.PHONY: clean all clean_dep clean_obj move irviz
 
-all: $(DEPS) $(TEST_OBJS) main move
+all: $(DEPS) $(TEST_OBJS) main move irviz
 main: $(TEST_OBJS) $(OBJS:%.o=${BIN_DIR}/%.o)
 
 %.d: %.c
@@ -27,6 +28,9 @@ move:
 	mkdir -p $(DEST_DIR)
 	@-mv *.o $(DEST_DIR) 2>/dev/null | :
 	@-mv main $(DEST_DIR) 2>/dev/null | :
+
+irviz:
+	$(MAKE) -C $(IRVIZ_DIR)
 
 clean_obj:
 	@-rm $(TEST_OBJS:%.o=${DEST_DIR}/%.o)
