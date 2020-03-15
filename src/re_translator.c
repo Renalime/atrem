@@ -350,6 +350,8 @@ unsigned char a_check_here(char *reg_exp, a_alt_list *al)
 {
 	if (*reg_exp == '\0')
 		return A_NO_ERR;
+	if (*reg_exp == '$' && *(reg_exp + 1) == '\0')
+		return a_generic_token(reg_exp, A_DOLLAR, al);
 	if (*reg_exp == '|')
 		return a_re_translate(reg_exp + 1, al);
 	if (*reg_exp == ')')
@@ -361,17 +363,6 @@ unsigned char a_check_here(char *reg_exp, a_alt_list *al)
 
 	return A_INVALID_RE;
 }
-
-/*
-static unsigned char a_parse_alternation(char *reg_exp, a_alt_list *al)
-{
-	a_token_list *tl = a_init_list();
-	if (!tl)
-		return A_MEM_ERR;
-	a_add_token_list(tl, al);
-	return a_re_translate(reg_exp + 1, al);
-}
-*/
 
 unsigned char a_re_translate(char *reg_exp, a_alt_list *al)
 {
