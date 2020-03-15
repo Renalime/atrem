@@ -3,6 +3,7 @@
 #include "globals.h"
 #include "bracket_parser.h"
 
+static unsigned char a_parse_alternation(char *reg_exp, a_alt_list *al);
 /*
 unsigned char a_check_here(char *reg_exp, a_token_list *l)
 {
@@ -231,7 +232,7 @@ int a_str_to_int(char *s)
 	return res;
 }
 
-int a_is_digit(char c)
+inline int a_is_digit(char c)
 {
 	return (c >= '0' && c <= '9') ? 1 : 0;
 }
@@ -314,7 +315,6 @@ unsigned char a_char_token(char *reg_exp, a_alt_list *al)
 		return a_parse_braces(reg_exp + 1, al, token);
 	a_add_token(token, a_get_last_list(al));
 	return (is_quantifier == A_CHAR) ? a_check_here(reg_exp + 1, al) : a_check_here(reg_exp + 2, al);
-
 }
 
 unsigned char a_is_valid_char(char c)
@@ -350,6 +350,8 @@ unsigned char a_check_here(char *reg_exp, a_alt_list *al)
 {
 	if (*reg_exp == '\0')
 		return A_NO_ERR;
+	if (*reg_exp == '|')
+		return a_re_translate(reg_exp + 1, al);
 	if (*reg_exp == ')')
 		return A_NESTED;
 	if (*reg_exp == '\\' && *(reg_exp + 1) != '\0')
@@ -360,12 +362,25 @@ unsigned char a_check_here(char *reg_exp, a_alt_list *al)
 	return A_INVALID_RE;
 }
 
+/*
+static unsigned char a_parse_alternation(char *reg_exp, a_alt_list *al)
+{
+	a_token_list *tl = a_init_list();
+	if (!tl)
+		return A_MEM_ERR;
+	a_add_token_list(tl, al);
+	return a_re_translate(reg_exp + 1, al);
+}
+*/
+
 unsigned char a_re_translate(char *reg_exp, a_alt_list *al)
 {
 	unsigned char ret;
 	a_token_list *l = a_init_list();
-	if (l == NULL)
+	if (!l)
 		return A_MEM_ERR;
-	ret = a_check_cir_flex(reg_exp, al);
-	return ret;
+	ret = a_add_token_list(l, al);
+	if (ret != A_NO_ERR)
+		return ret;
+	return a_check_cir_flex(reg_exp, al);
 }
