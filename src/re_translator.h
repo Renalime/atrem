@@ -8,7 +8,6 @@ unsigned char a_re_translate(char *reg_exp, a_alt_list *al);
 unsigned char a_check_here(char *reg_exp, a_alt_list *al);
 unsigned char a_check_cir_flex(char *reg_exp, a_alt_list *al);
 unsigned char a_escape_token(char *reg_exp, a_alt_list *al);
-unsigned char a_generic_token(char *reg_exp, unsigned char token_type, a_alt_list *al);
 unsigned char a_is_valid_char(char c);
 unsigned char a_char_token(char *reg_exp, a_alt_list *al);
 unsigned char a_is_quantifier(char c);
