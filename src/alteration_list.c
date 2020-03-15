@@ -49,7 +49,7 @@ unsigned char a_add_token_list(a_token_list *tl, a_alt_list *al)
 
 a_token_list * a_get_next_list(a_alt_list *l)
 {
-	l->current = l->current->next;
+	l->current = (l->current ? l->current->next : NULL);
 	return (l->current) ? l->current->l : NULL;
 }
 

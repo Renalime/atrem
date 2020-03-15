@@ -22,7 +22,7 @@ void a_rm_cc_token_list(a_cc_token_list *cc_l)
 	a_cc_token_node *it = cc_l->head;
 	a_cc_token_node *tmp;
 	while (it != NULL) {
-		tmp = it;	
+		tmp = it;
 		it = it->next;
 		free (it->a_token);
 		free (tmp);
@@ -32,8 +32,8 @@ void a_rm_cc_token_list(a_cc_token_list *cc_l)
 
 a_cc_token * a_cc_get_next_token(a_cc_token_list *cc_l)
 {
-	cc_l->current = cc_l->current->next;
-	return cc_l->current->a_token;
+	cc_l->current = (cc_l->current ? cc_l->current->next : NULL);
+	return (cc_l->current ? cc_l->current->a_token : NULL);
 }
 
 unsigned int a_add_cc_token(a_cc_token *token, a_cc_token_list *cc_l)
@@ -44,7 +44,7 @@ unsigned int a_add_cc_token(a_cc_token *token, a_cc_token_list *cc_l)
 	new_node->a_token = token;
 	new_node->next = NULL;
 	cc_l->last->next = new_node;
-	cc_l->last = new_node;	
+	cc_l->last = new_node;
 	return A_NO_ERR;
 }
 

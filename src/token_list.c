@@ -33,8 +33,8 @@ void a_rm_list(a_token_list *l)
 
 a_reg_exp_token * a_get_next_token(a_token_list *l)
 {
-	l->current = l->current->next;
-	return (l->current) ? l->current->a_token : NULL; 
+	l->current = (l->current ? l->current->next : NULL);
+	return (l->current) ? l->current->a_token : NULL;
 }
 
 unsigned char a_add_token(a_reg_exp_token *t, a_token_list *l)
@@ -44,7 +44,7 @@ unsigned char a_add_token(a_reg_exp_token *t, a_token_list *l)
 		return A_MEM_ERR;
 	new_node->a_token = t;
 	new_node->next = NULL;
-	l->last->next = new_node; 
+	l->last->next = new_node;
 	l->last = new_node;
 	return A_NO_ERR;
 }
@@ -57,6 +57,6 @@ a_reg_exp_token * a_gen_token(int q, unsigned char type, a_re_text c_token, unsi
 	token->a_quantifier = q;
 	token->a_re_text_type = type;
 	token->a_text = c_token;
-	token->a_is_negated = is_negated; 
+	token->a_is_negated = is_negated;
 	return token;
 }
