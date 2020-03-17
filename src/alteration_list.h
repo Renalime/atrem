@@ -20,6 +20,7 @@ struct a_alt_list {
 a_token_list * a_get_next_list(a_alt_list *l);
 a_token_list * a_get_last_list(a_alt_list *l);
 unsigned char a_add_token_list(a_token_list *tl, a_alt_list *al);
+unsigned char a_rm_last_token_list(a_alt_list *al);
 void a_rm_alt_list(a_alt_list *l);
 a_alt_list * a_init_alt_list();
 

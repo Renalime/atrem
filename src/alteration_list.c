@@ -47,6 +47,18 @@ unsigned char a_add_token_list(a_token_list *tl, a_alt_list *al)
 	return A_NO_ERR;
 }
 
+unsigned char a_rm_last_token_list(a_alt_list *al)
+{
+	a_alt_node *an = al->head;
+	if (al->last == al->head)
+		return A_NO_ERR;
+	while (an->next != al->last)
+		an = an->next;
+	al->last = an;
+	an->next = NULL;
+	return A_NO_ERR;
+}
+
 a_token_list * a_get_next_list(a_alt_list *l)
 {
 	l->current = (l->current ? l->current->next : NULL);
