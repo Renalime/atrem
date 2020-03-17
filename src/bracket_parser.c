@@ -17,7 +17,7 @@ a_tuple_ret a_parse_brackets_init(char *reg_exp, a_cc_token_list *l)
 			return ret;
 		reg_exp++;
 	}
-	return a_parse_brackets_check(reg_exp, l);	
+	return a_parse_brackets_check(reg_exp, l);
 }
 
 a_tuple_ret a_parse_brackets_check(char *reg_exp, a_cc_token_list *l)
@@ -98,7 +98,7 @@ a_tuple_ret a_parse_brackets_check_char(char *reg_exp, a_cc_token_list *l)
 	return a_parse_brackets_check(reg_exp + 1, l);
 }
 
-/* This macroses defined right HERE because they are used in a specific context, particularly in functions that add character classes like [:alnum:], etc. */ 
+/* This macroses defined right HERE because they are used in a specific context, particularly in functions that add character classes like [:alnum:], etc. */
 
 #define A_CC_ADD_CHAR(token, c, cc_char) do { cc_char.a_char = c; token = a_cc_gen_token(A_CHAR, cc_char); } while(0)
 #define A_CC_ADD_RANGE(token, min_v, max_v, cc_char) do { cc_char.a_range.min = min_v; cc_char.a_range.max = max_v; token = a_cc_gen_token(A_RANGE, cc_char); } while(0)
@@ -308,7 +308,6 @@ unsigned char a_is_class(char *s)
 			s++;
 			if (a_str_is_equal(s, alnum_str + 2))
 				return A_CC_ALNUM;
-			
 			if (a_str_is_equal(s, alpha_str + 2))
 				return A_CC_ALPHA;
 		}

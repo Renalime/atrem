@@ -3,7 +3,7 @@
 
 #include "cc_token_list.h"
 
-/* The next struct is just a convinience for returning the next chacacter to process in a string and at the same time the function exit code. */
+/* The next struct is just a convinience(workaround) for returning the next chacacter to process in a string and at the same time the function exit code. */
 
 typedef struct {
 	char *reg_exp;

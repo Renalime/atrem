@@ -1,6 +1,7 @@
 #include "token_list.h"
 #include <stdlib.h>
 #include "globals.h"
+#include "alteration_list.h"
 
 a_token_list * a_init_list()
 {
@@ -27,7 +28,7 @@ void a_rm_list(a_token_list *l)
 		temp = it;
 		it = it->next;
 		if (it->a_token->a_re_text_type == RE_CHAR_TYPE_PARENS)
-			a_rm_list(it->a_token->a_text.a_l);
+			a_rm_alt_list(it->a_token->a_text.a_l);
 		else if (it->a_token->a_re_text_type == RE_CHAR_TYPE_BRACKETS)
 			a_rm_cc_token_list(it->a_token->a_text.a_cc_l);
 		free(temp->a_token);

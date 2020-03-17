@@ -5,7 +5,7 @@ DEPS_DIR = dependencies
 BIN_DIR ?= ../bin
 vpath %.o $(BIN_DIR)
 vpath %.d $(DEPS_DIR)
-CFLAGS += -O3 -Wall -pedantic
+CFLAGS += -O3 -Wall -pedantic -g
 
 .PHONY: clean_obj clean_dep clean depend all move
 
