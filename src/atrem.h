@@ -5,5 +5,6 @@ typedef struct a_alt_list *atrem_regex;
 
 atrem_regex atrem_parse_regex(char *regex);
 void atrem_dispose_regex(atrem_regex regex);
+char *atrem_match_string(char *s, atrem_regex regex);
 
 #endif

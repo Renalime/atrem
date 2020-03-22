@@ -43,6 +43,7 @@ a_reg_exp_token * a_get_next_token(a_token_list *l)
 	return (l->current) ? l->current->a_token : NULL;
 }
 
+
 unsigned char a_add_token(a_reg_exp_token *t, a_token_list *l)
 {
 	a_token_node *new_node = malloc(sizeof(a_token_node));

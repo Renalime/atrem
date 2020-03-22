@@ -3,7 +3,7 @@ LDLIBS = -lm
 TEST_SRCS = main.c token_list_tests.c alteration_list_tests.c
 TEST_OBJS = $(TEST_SRCS:%.c=%.o)
 DEPS = $(TEST_SRCS:%.c=%.d)
-SRCS = alteration_list.c bracket_parser.c cc_token_list.c re_translator.c token_list.c atrem.c print_ir.c
+SRCS = alteration_list.c bracket_parser.c cc_token_list.c re_translator.c token_list.c atrem.c print_ir.c matcher.c
 OBJS = $(SRCS:%.c=%.o)
 DEPS_DIR = dependencies
 BIN_DIR ?= ../bin

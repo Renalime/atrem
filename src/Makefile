@@ -1,4 +1,4 @@
-SRCS = alteration_list.c bracket_parser.c cc_token_list.c re_translator.c token_list.c atrem.c
+SRCS = alteration_list.c bracket_parser.c cc_token_list.c re_translator.c token_list.c atrem.c matcher.c
 OBJS = $(SRCS:%.c=%.o)
 DEPS = $(SRCS:%.c=%.d)
 DEPS_DIR = dependencies

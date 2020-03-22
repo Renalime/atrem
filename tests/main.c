@@ -3,6 +3,7 @@
 #include "alteration_list_tests.h"
 #include "../src/atrem.h"
 #include "irviz/print_ir.h"
+#include "test_framework.h"
 
 void parse_cmd_options(int argc, char **argv);
 void show_help();
@@ -59,14 +60,22 @@ void parse_cmd_options(int argc, char **argv){
 	}
 }
 
-void atrem_test()
+int atrem_test()
 {
 	atrem_regex ar;
+	char *re = "^abcd";
+	char *s = "abcderty";
+	ar = atrem_parse_regex(re);
+	_assert(atrem_match_string(s, ar) != NULL);
+	atrem_dispose_regex(ar);
+	/*
 	char *s = "q(a{,2}b{3,}c{2})?[^]0-9A-Z][[:punct:][:alnum:]]";
 	puts(s);
 	ar = atrem_parse_regex(s);
 	print_ir(ar);
 	atrem_dispose_regex(ar);
+	*/
+	return 0;
 }
 
 int main(int argc, char **argv){
