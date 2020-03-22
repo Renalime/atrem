@@ -12,7 +12,10 @@ static char *match_token_list(const char *s, a_token_list *tl);
 static inline
 char *check_char(const char *s, char c)
 {
-	return (*s++ == c ? (char *)s : NULL);
+	if (!c)
+		return (char *)++s;
+	else
+		return (*s++ == c ? (char *)s : NULL);
 }
 
 static char *match_token(const char *s, a_reg_exp_token *t)
@@ -21,6 +24,8 @@ static char *match_token(const char *s, a_reg_exp_token *t)
 	case A_CHAR:
 		s = check_char(s, t->a_text.a_char);
 		break;
+	default:
+		s = NULL;
 	}
 	return (char *)s;
 }
@@ -37,7 +42,7 @@ static char *match_token_list(const char *s, a_token_list *tl)
 	}
 	while (t && tmp) {
 		if (!*s)
-			return NULL;
+			return (t->a_quantifier == A_DOLLAR ? (char *)s : NULL);
 		s = match_token(s, t);
 		if (!s) {
 			if (is_cf)

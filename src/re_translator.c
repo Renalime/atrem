@@ -14,6 +14,7 @@ static unsigned char a_check_here(char *reg_exp, a_alt_list *al);
 static unsigned char a_char_token(char *reg_exp, a_alt_list *al);
 static unsigned char a_is_quantifier(char c);
 static unsigned char a_parse_braces(char *reg_exp, a_alt_list *al, a_reg_exp_token *t);
+static unsigned char a_parse_dot(char *reg_exp, a_alt_list *al);
 static int a_str_to_int(const char *s);
 
 
@@ -115,7 +116,7 @@ int a_is_digit(const char c)
 	return (c >= '0' && c <= '9') ? 1 : 0;
 }
 
-unsigned char a_is_quantifier(char c)
+static unsigned char a_is_quantifier(char c)
 {
 	switch(c) {
 	case '*':
@@ -135,7 +136,7 @@ unsigned char a_is_quantifier(char c)
 }
 
 
-unsigned char a_parse_braces(char *reg_exp, a_alt_list *al, a_reg_exp_token *t)
+static unsigned char a_parse_braces(char *reg_exp, a_alt_list *al, a_reg_exp_token *t)
 {
 	a_re_range ranges;
 	int range;
@@ -174,7 +175,22 @@ unsigned char a_parse_braces(char *reg_exp, a_alt_list *al, a_reg_exp_token *t)
 	return a_check_here(reg_exp + 1, al);
 }
 
-unsigned char a_char_token(char *reg_exp, a_alt_list *al)
+static unsigned char a_parse_dot(char *reg_exp, a_alt_list *al)
+{
+	a_re_text text;
+	a_reg_exp_token *token;
+	unsigned char is_quantifier = a_is_quantifier(*(reg_exp + 1));
+	text.a_char = 0;
+	token = a_gen_token(is_quantifier, RE_CHAR_TYPE_CHAR, text, 0);
+	if (token == NULL)
+		return A_MEM_ERR;
+	if (is_quantifier == A_BRACES)
+		return a_parse_braces(reg_exp + 2, al, token);
+	a_add_token(token, a_get_last_list(al));
+	return (is_quantifier == A_CHAR) ? a_check_here(reg_exp + 1, al) : a_check_here(reg_exp + 2, al);
+}
+
+static unsigned char a_char_token(char *reg_exp, a_alt_list *al)
 {
 	a_re_text text;
 	a_reg_exp_token *token;
@@ -196,7 +212,7 @@ unsigned char a_is_valid_char(char c)
 }
 
 
-unsigned char a_cf_dollar_token(char *reg_exp, unsigned char type, a_alt_list *al)
+static unsigned char a_cf_dollar_token(char *reg_exp, unsigned char type, a_alt_list *al)
 {
 	a_re_text text;
 	a_reg_exp_token *token;
@@ -214,7 +230,7 @@ unsigned char a_check_cir_flex(char *reg_exp, a_alt_list *al)
 	return (*reg_exp == '^' ? a_cf_dollar_token(reg_exp, A_CIR_FLEX, al) : a_check_here(reg_exp, al));
 }
 
-unsigned char a_check_here(char *reg_exp, a_alt_list *al)
+static unsigned char a_check_here(char *reg_exp, a_alt_list *al)
 {
 	if (*reg_exp == '\0')
 		return A_NO_ERR;
@@ -228,6 +244,8 @@ unsigned char a_check_here(char *reg_exp, a_alt_list *al)
 		return a_re_translate(reg_exp + 1, al);
 	if (*reg_exp == ')')
 		return A_NESTED;
+	if (*reg_exp == '.')
+		return a_parse_dot(reg_exp, al);
 	if (*reg_exp == '\\' && *(reg_exp + 1) != '\0')
 		return a_char_token(reg_exp + 1, al);
 	if (a_is_valid_char(*reg_exp))

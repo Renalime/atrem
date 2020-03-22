@@ -63,18 +63,20 @@ void parse_cmd_options(int argc, char **argv){
 int atrem_test()
 {
 	atrem_regex ar;
-	char *re = "^abcd";
-	char *s = "abcderty";
+	/*
+	char *re = "^abcd|^ert|^qwabc";
+	char *s = "qwabcderty";
 	ar = atrem_parse_regex(re);
 	_assert(atrem_match_string(s, ar) != NULL);
 	atrem_dispose_regex(ar);
-	/*
-	char *s = "q(a{,2}b{3,}c{2})?[^]0-9A-Z][[:punct:][:alnum:]]";
+	*/
+
+	char *s = ".\\.";
 	puts(s);
 	ar = atrem_parse_regex(s);
 	print_ir(ar);
 	atrem_dispose_regex(ar);
-	*/
+
 	return 0;
 }
 
