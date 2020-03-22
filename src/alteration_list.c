@@ -69,3 +69,15 @@ a_token_list * a_get_last_list(a_alt_list *l)
 {
 	return l->last->l;
 }
+
+void a_reset_alt_list(a_alt_list *l)
+{
+	a_token_list *tl;
+	l->current = l->head;
+	tl = a_get_next_list(l);
+	while (tl) {
+		a_reset_token_list(tl);
+		tl = a_get_next_list(l);
+	}
+	l->current = l->head;
+}

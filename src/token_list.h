@@ -43,7 +43,8 @@ void a_rm_list(a_token_list *l);
 a_token_list * a_init_list();
 a_reg_exp_token * a_gen_token(int q, unsigned char type, a_re_text text, unsigned char is_negated);
 
-static inline void a_reset_token_list(a_token_list *l)
+static inline
+void a_reset_token_list(a_token_list *l)
 {
 	l->current = l->head;
 }

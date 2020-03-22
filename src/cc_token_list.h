@@ -35,4 +35,10 @@ a_cc_token * a_cc_get_next_token(a_cc_token_list *cc_l);
 unsigned int a_add_cc_token(a_cc_token *token, a_cc_token_list *cc_l);
 a_cc_token * a_cc_gen_token(unsigned int type, a_cc_char c);
 
+static inline
+void a_reset_cc_list(a_cc_token_list *cc_l)
+{
+	cc_l->current = cc_l->head;
+}
+
 #endif

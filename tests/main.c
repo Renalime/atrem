@@ -63,20 +63,23 @@ void parse_cmd_options(int argc, char **argv){
 int atrem_test()
 {
 	atrem_regex ar;
-	/*
-	char *re = "^abcd|^ert|^qwabc";
-	char *s = "qwabcderty";
-	ar = atrem_parse_regex(re);
-	_assert(atrem_match_string(s, ar) != NULL);
-	atrem_dispose_regex(ar);
-	*/
 
+	char *re = "a[ac]*(qwqw(qw)*)*[a-z]*";
+	char *s = "aaccqwqwqwe";
+	char *t;
+	ar = atrem_parse_regex(re);
+	t = atrem_match_string(s, ar);
+	_assert(t != NULL);
+	printf("%s\n", t);
+	atrem_dispose_regex(ar);
+
+	/*
 	char *s = ".\\.";
 	puts(s);
 	ar = atrem_parse_regex(s);
 	print_ir(ar);
 	atrem_dispose_regex(ar);
-
+	*/
 	return 0;
 }
 
