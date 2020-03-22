@@ -19,12 +19,14 @@ a_cc_token_list * a_init_cc_token_list()
 
 void a_rm_cc_token_list(a_cc_token_list *cc_l)
 {
-	a_cc_token_node *it = cc_l->head;
-	a_cc_token_node *tmp;
+	a_cc_token_node *it, *tmp;
+	if (!cc_l)
+		return;
+	it = cc_l->head;
 	while (it != NULL) {
 		tmp = it;
 		it = it->next;
-		free (it->a_token);
+		free (tmp->a_token);
 		free (tmp);
 	}
 	free (cc_l);

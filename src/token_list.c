@@ -22,15 +22,16 @@ void a_rm_list(a_token_list *l)
 {
 	if (l == NULL)
 		return;
-	a_token_node *it = l->head;
-	a_token_node *temp;
+	a_token_node *it = l->head->next;
+	a_token_node *temp = l->head;
+	free(temp);
 	while (it != NULL) {
 		temp = it;
 		it = it->next;
-		if (it->a_token->a_re_text_type == RE_CHAR_TYPE_PARENS)
-			a_rm_alt_list(it->a_token->a_text.a_l);
-		else if (it->a_token->a_re_text_type == RE_CHAR_TYPE_BRACKETS)
-			a_rm_cc_token_list(it->a_token->a_text.a_cc_l);
+		if (temp->a_token->a_re_text_type == RE_CHAR_TYPE_PARENS)
+			a_rm_alt_list(temp->a_token->a_text.a_l);
+		else if (temp->a_token->a_re_text_type == RE_CHAR_TYPE_BRACKETS)
+			a_rm_cc_token_list(temp->a_token->a_text.a_cc_l);
 		free(temp->a_token);
 		free(temp);
 	}

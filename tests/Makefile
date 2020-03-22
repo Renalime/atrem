@@ -1,9 +1,9 @@
-CFLAGS = -pedantic -Wall -O3
+CFLAGS ?= -pedantic -Wall -O3
 LDLIBS = -lm
 TEST_SRCS = main.c token_list_tests.c alteration_list_tests.c
 TEST_OBJS = $(TEST_SRCS:%.c=%.o)
 DEPS = $(TEST_SRCS:%.c=%.d)
-SRCS = alteration_list.c bracket_parser.c cc_token_list.c re_translator.c token_list.c
+SRCS = alteration_list.c bracket_parser.c cc_token_list.c re_translator.c token_list.c atrem.c print_ir.c
 OBJS = $(SRCS:%.c=%.o)
 DEPS_DIR = dependencies
 BIN_DIR ?= ../bin
@@ -15,7 +15,7 @@ vpath %.d $(DEPS_DIR)
 
 .PHONY: clean all clean_dep clean_obj move irviz
 
-all: $(DEPS) $(TEST_OBJS) main move irviz
+all: $(DEPS) $(TEST_OBJS) irviz main move
 main: $(TEST_OBJS) $(OBJS:%.o=${BIN_DIR}/%.o)
 
 %.d: %.c

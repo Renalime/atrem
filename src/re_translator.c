@@ -23,11 +23,11 @@ unsigned char a_parse_brackets(char *reg_exp, a_alt_list *l)
 	a_reg_exp_token *token;
 	unsigned char is_quantifier;
 	a_cc_token_list *list = a_init_cc_token_list();
-	if (list != NULL)
+	if (!list)
 		return A_MEM_ERR;
 	unsigned char is_negated = 0;
 	a_tuple_ret ret;
-	if (list == NULL)
+	if (!list)
 		return A_MEM_ERR;
 	if (*reg_exp == '^') {
 		is_negated = 1;
@@ -36,8 +36,7 @@ unsigned char a_parse_brackets(char *reg_exp, a_alt_list *l)
 	ret = a_parse_brackets_init(reg_exp, list);
 	if (ret.ret != A_NO_ERR)
 		return ret.ret;
-	reg_exp = ret.reg_exp;
-	reg_exp++;
+	reg_exp = ret.reg_exp + 1;
 	is_quantifier = a_is_quantifier(*reg_exp);
 	text.a_cc_l = list;
 	token = a_gen_token(is_quantifier, RE_CHAR_TYPE_BRACKETS, text, is_negated);
@@ -66,6 +65,7 @@ static char * a_find_closing_paren(char *reg_exp)
 		}
 		if (*reg_exp == '(')
 			nested++;
+		reg_exp++;
 	}
 	return NULL;
 }
@@ -152,7 +152,7 @@ unsigned char a_parse_braces(char *reg_exp, a_alt_list *al, a_reg_exp_token *t)
 	if (*reg_exp != '}') {
 		if (*reg_exp != ',')
 			return A_INVALID_RE;
-		ranges.min = -1;
+		ranges.min = range;
 		reg_exp++;
 		i = 0;
 		while (*reg_exp == ' ' || *reg_exp == '\t')
@@ -184,7 +184,7 @@ unsigned char a_char_token(char *reg_exp, a_alt_list *al)
 	if (token == NULL)
 		return A_MEM_ERR;
 	if (is_quantifier == A_BRACES)
-		return a_parse_braces(reg_exp + 1, al, token);
+		return a_parse_braces(reg_exp + 2, al, token);
 	a_add_token(token, a_get_last_list(al));
 	return (is_quantifier == A_CHAR) ? a_check_here(reg_exp + 1, al) : a_check_here(reg_exp + 2, al);
 }

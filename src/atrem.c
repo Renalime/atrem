@@ -1,7 +1,7 @@
 #include "atrem.h"
 #include "re_translator.h"
 #include "globals.h"
-#define NULL 0
+#include <stdlib.h>
 
 atrem_regex atrem_parse_regex(char *regex)
 {
@@ -19,4 +19,5 @@ atrem_regex atrem_parse_regex(char *regex)
 inline void atrem_dispose_regex(atrem_regex regex)
 {
 	a_rm_alt_list(regex);
+	free(regex);
 }

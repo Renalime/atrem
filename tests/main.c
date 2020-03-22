@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include "token_list_tests.h"
 #include "alteration_list_tests.h"
+#include "../src/atrem.h"
+#include "irviz/print_ir.h"
 
 void parse_cmd_options(int argc, char **argv);
 void show_help();
@@ -19,7 +21,7 @@ static struct program_options po = {
 	0,
 	0,
 	0
-}; 
+};
 
 void show_help(){
 	printf("-h: Show help\n"
@@ -31,7 +33,7 @@ void show_help(){
 void parse_cmd_options(int argc, char **argv){
 	int i = 1;
 	argv++;
-	for (i; i < argc; i++, argv++){
+	for (; i < argc; i++, argv++){
 		while (((++(*argv))[0]) != '\0'){
 			switch ((*argv)[0]){
 			case 'f':
@@ -48,13 +50,23 @@ void parse_cmd_options(int argc, char **argv){
 				show_help();
 				return;
 			default:
-				printf("Unknown command line argument\n");	
+				printf("Unknown command line argument\n");
 				show_help();
 				po.error = 1;
-				return;	
+				return;
 			}
 		}
 	}
+}
+
+void atrem_test()
+{
+	atrem_regex ar;
+	char *s = "q(a{,2}b{3,}c{2})?[^]0-9A-Z][[:punct:][:alnum:]]";
+	puts(s);
+	ar = atrem_parse_regex(s);
+	print_ir(ar);
+	atrem_dispose_regex(ar);
 }
 
 int main(int argc, char **argv){
@@ -65,15 +77,8 @@ int main(int argc, char **argv){
 	if (po.show_help == 1) {
 		return 0;
 	}
+	atrem_test();
 	do_token_list_tests();
 	do_alteration_list_tests();
-	/*
-	if (po.func_tests) {
-		test_functionality(po.verbose_mode);
-	}
-	if (po.unit_tests) {
-		test_units(po.verbose_mode);
-	}
-	*/
 	return 0;
 }

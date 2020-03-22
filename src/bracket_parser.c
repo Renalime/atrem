@@ -74,12 +74,10 @@ a_tuple_ret a_parse_brackets_check_cc(char *reg_exp, a_cc_token_list *l)
 		return ret;
 	class[i] = '\0';
 	is_class = a_is_class(class);
-	if (!is_class) {
+	if (!is_class)
 		return ret;
-	}
-	if (a_add_class_word(is_class, l) == is_class) {
+	if (a_add_class_word(is_class, l) != A_NO_ERR)
 		return ret;
-	}
 	return a_parse_brackets_check(reg_exp + 2, l);
 }
 
@@ -98,11 +96,10 @@ a_tuple_ret a_parse_brackets_check_char(char *reg_exp, a_cc_token_list *l)
 	return a_parse_brackets_check(reg_exp + 1, l);
 }
 
-/* This macroses defined right HERE because they are used in a specific context, particularly in functions that add character classes like [:alnum:], etc. */
 
 #define A_CC_ADD_CHAR(token, c, cc_char) do { cc_char.a_char = c; token = a_cc_gen_token(A_CHAR, cc_char); } while(0)
 #define A_CC_ADD_RANGE(token, min_v, max_v, cc_char) do { cc_char.a_range.min = min_v; cc_char.a_range.max = max_v; token = a_cc_gen_token(A_RANGE, cc_char); } while(0)
-#define A_ASSERT_CC_ADD(token, l) do { if (token == NULL) { return A_MEM_ERR; } if (a_add_cc_token(token, l) != A_MEM_ERR) { return A_MEM_ERR; } } while(0)
+#define A_ASSERT_CC_ADD(token, l) do { if (token == NULL) { return A_MEM_ERR; } if (a_add_cc_token(token, l) != A_NO_ERR) { return A_MEM_ERR; } } while(0)
 
 unsigned char a_add_alnum_word(a_cc_token_list *l)
 {

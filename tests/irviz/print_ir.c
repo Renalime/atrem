@@ -22,7 +22,7 @@ unsigned char re_quantifiers_map[10] = {
 	'-',
 };
 unsigned char re_char_type_map[3] = {
-	'{',
+	'(',
 	'c',
 	'[',
 };
@@ -61,12 +61,12 @@ static void print_reg_exp_token(a_reg_exp_token *t, uint16_t n_t)
 	}
 	else if (t->a_re_text_type == RE_CHAR_TYPE_PARENS) {
 		puts("Token list inside:\n");
-		parse_token_list(t->a_text.a_l);
+		print_ir(t->a_text.a_l);
 		puts("Token list outside\n");
 	}
 	else {
 		parse_brackets(t->a_text.a_cc_l);
-		printf("Is negated: %c", (t->a_is_negated ? 'y' : 'n'));
+		printf("Is negated: %c\n", (t->a_is_negated ? 'y' : 'n'));
 	}
 }
 

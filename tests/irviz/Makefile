@@ -4,7 +4,7 @@ OBJS = $(SRCS:%.c=%.o)
 DEPS = $(SRCS:%.c=%.d)
 DEPS_DIR = dependencies
 BIN_DIR ?= ../../bin
-DEST_DIR ?= $(BIN_DIR)/irviz
+DEST_DIR ?= $(BIN_DIR)
 vpath %.o $(BIN_DIR)
 vpath %.o $(DEST_DIR)
 vpath %.d $(DEPS_DIR)

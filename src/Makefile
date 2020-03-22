@@ -1,11 +1,11 @@
-SRCS = alteration_list.c bracket_parser.c cc_token_list.c re_translator.c token_list.c
+SRCS = alteration_list.c bracket_parser.c cc_token_list.c re_translator.c token_list.c atrem.c
 OBJS = $(SRCS:%.c=%.o)
 DEPS = $(SRCS:%.c=%.d)
 DEPS_DIR = dependencies
 BIN_DIR ?= ../bin
 vpath %.o $(BIN_DIR)
 vpath %.d $(DEPS_DIR)
-CFLAGS += -O3 -Wall -pedantic -g
+CFLAGS ?= -O0 -Wall -pedantic -g
 
 .PHONY: clean_obj clean_dep clean depend all move
 
