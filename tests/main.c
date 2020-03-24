@@ -68,17 +68,19 @@ int atrem_test()
 	char *re = "[^A-Z0-9]a[ac]*(qwqw(qw)*)*[^a-z]*";
 	char *s = "0aaccqwqwqwe";
 	*/
-	char *re = "(abc)+[^0-9]+";
-	char *s = "abc";
+	///*
+	char *re = "(abc){3}";
+	char *s = "abcabcabcabc";
 	char *t;
 	ar = atrem_parse_regex(re);
 	t = atrem_match_string(s, ar);
 	_assert(t != NULL);
 	printf("%s\n", t);
 	atrem_dispose_regex(ar);
+	//*/
 
 	/*
-	char *s = ".\\.";
+	char *s = "(abc){2}";
 	puts(s);
 	ar = atrem_parse_regex(s);
 	print_ir(ar);

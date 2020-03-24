@@ -3,7 +3,14 @@
 #include "token_list.h"
 #include "cc_token_list.h"
 #include "globals.h"
-#define NULL 0
+#include <stdio.h>
+#include <limits.h>
+//#define NULL 0
+
+struct tuple_match {
+	const char *s;
+	unsigned long n_match;
+};
 
 static char *match_token(const char *s, a_reg_exp_token *t);
 static char *match_cc_token(const char *s, a_cc_token *t);
@@ -12,6 +19,9 @@ static char *match_cc_token_list(const char *s, a_cc_token_list *tl, const char 
 static char *check_star(const char *s, a_reg_exp_token *t);
 static char *check_one(const char *s, a_reg_exp_token *t);
 static char *check_plus(const char *s, a_reg_exp_token *t);
+static char *check_qm(const char *s, a_reg_exp_token *t);
+static char *check_braces(const char *s, a_reg_exp_token *t);
+static struct tuple_match match_n_times(const char *s, a_reg_exp_token *t);
 
 static inline
 char *check_char(const char *s, char c)
@@ -20,6 +30,69 @@ char *check_char(const char *s, char c)
 		return (char *)++s;
 	else
 		return (*s++ == c ? (char *)s : NULL);
+}
+
+static char *check_braces(const char *s, a_reg_exp_token *t)
+{
+	const char *tmp = s;
+	int n = 0;
+	int max = (t->a_braces_range.max == -1 ? INT_MAX : t->a_braces_range.max);
+	while (n < max) {
+		s = check_one(s, t);
+		if (s) {
+			tmp = s;
+			n = n + 1;
+		} else {
+			break;
+		}
+	}
+	//printf("%d %s\n", n, s);
+	if (n >= t->a_braces_range.min)
+		return (char *)tmp;
+	return NULL;
+}
+
+static char *check_qm(const char *s, a_reg_exp_token *t)
+{
+	const char *tmp = s;
+	s = check_one(s, t);
+	return (s ? (char *)s : (char *)tmp);
+}
+
+static struct tuple_match match_n_times(const char *s, a_reg_exp_token *t)
+{
+	struct tuple_match tm;
+	const char *tmp;
+	switch (t->a_re_text_type) {
+	case RE_CHAR_TYPE_CHAR:
+		while (s) {
+			tmp = s;
+			s = check_char(s, t->a_text.a_char);
+			tm.n_match++;
+		}
+		break;
+	case RE_CHAR_TYPE_PARENS:
+		while (s) {
+			tmp = s;
+			s = match(s, t->a_text.a_l);
+			a_reset_alt_list(t->a_text.a_l);
+			tm.n_match++;
+		}
+		break;
+	case RE_CHAR_TYPE_BRACKETS:
+		while (s) {
+			tmp = s;
+			s = match_cc_token_list(s, t->a_text.a_cc_l, t->a_is_negated);
+			a_reset_cc_list(t->a_text.a_cc_l);
+			tm.n_match++;
+		}
+		break;
+	default:
+		tmp = NULL;
+	}
+	tm.n_match--;
+	tm.s = tmp;
+	return tm;
 }
 
 static char *check_plus(const char *s, a_reg_exp_token *t)
@@ -31,7 +104,7 @@ static char *check_plus(const char *s, a_reg_exp_token *t)
 
 static char *check_star(const char *s, a_reg_exp_token *t)
 {
-	const char *tmp = NULL;
+	const char *tmp;
 	switch (t->a_re_text_type) {
 	case RE_CHAR_TYPE_CHAR:
 		while (s) {
@@ -54,7 +127,7 @@ static char *check_star(const char *s, a_reg_exp_token *t)
 		}
 		break;
 	default:
-		s = tmp;
+		tmp = NULL;
 	}
 	return (char *)tmp;
 }
@@ -94,6 +167,12 @@ static char *match_token(const char *s, a_reg_exp_token *t)
 		break;
 	case A_PLUS:
 		s = check_plus(s, t);
+		break;
+	case A_QUESTION:
+		s = check_qm(s, t);
+		break;
+	case A_BRACES:
+		s = check_braces(s, t);
 		break;
 	default:
 		s = NULL;
