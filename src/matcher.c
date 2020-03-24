@@ -3,8 +3,7 @@
 #include "token_list.h"
 #include "cc_token_list.h"
 #include "globals.h"
-#include <stdio.h>
-//#define NULL 0
+#define NULL 0
 
 static char *match_token(const char *s, a_reg_exp_token *t);
 static char *match_cc_token(const char *s, a_cc_token *t);
@@ -12,6 +11,7 @@ static char *match_token_list(const char *s, a_token_list *tl);
 static char *match_cc_token_list(const char *s, a_cc_token_list *tl, const char is_negated);
 static char *check_star(const char *s, a_reg_exp_token *t);
 static char *check_one(const char *s, a_reg_exp_token *t);
+static char *check_plus(const char *s, a_reg_exp_token *t);
 
 static inline
 char *check_char(const char *s, char c)
@@ -20,6 +20,13 @@ char *check_char(const char *s, char c)
 		return (char *)++s;
 	else
 		return (*s++ == c ? (char *)s : NULL);
+}
+
+static char *check_plus(const char *s, a_reg_exp_token *t)
+{
+	const char *tmp = s;
+	s = check_star(s, t);
+	return (s == tmp ? NULL : (char *)s);
 }
 
 static char *check_star(const char *s, a_reg_exp_token *t)
@@ -84,6 +91,9 @@ static char *match_token(const char *s, a_reg_exp_token *t)
 		break;
 	case A_STAR:
 		s = check_star(s, t);
+		break;
+	case A_PLUS:
+		s = check_plus(s, t);
 		break;
 	default:
 		s = NULL;
