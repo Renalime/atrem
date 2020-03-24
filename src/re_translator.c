@@ -92,7 +92,7 @@ static unsigned char a_parse_parens(char *reg_exp, a_alt_list *l)
 	if (token == NULL)
 		return A_MEM_ERR;
 	if (is_quantifier == A_BRACES)
-		return a_parse_braces(reg_exp + 1, l, token);
+		return a_parse_braces(reg_exp + 2, l, token);
 	a_add_token(token, a_get_last_list(l));
 	return (is_quantifier == A_CHAR) ? a_check_here(reg_exp + 1, l) : a_check_here(reg_exp + 2, l);
 }
