@@ -64,8 +64,12 @@ int atrem_test()
 {
 	atrem_regex ar;
 
-	char *re = "a[ac]*(qwqw(qw)*)*[a-z]*";
-	char *s = "aaccqwqwqwe";
+	/*
+	char *re = "[^A-Z0-9]a[ac]*(qwqw(qw)*)*[^a-z]*";
+	char *s = "0aaccqwqwqwe";
+	*/
+	char *re = "qwerty(abc|cba)";
+	char *s = "qwertycbb";
 	char *t;
 	ar = atrem_parse_regex(re);
 	t = atrem_match_string(s, ar);

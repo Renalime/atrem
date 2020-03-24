@@ -11,6 +11,7 @@ static char *match_cc_token(const char *s, a_cc_token *t);
 static char *match_token_list(const char *s, a_token_list *tl);
 static char *match_cc_token_list(const char *s, a_cc_token_list *tl, const char is_negated);
 static char *check_star(const char *s, a_reg_exp_token *t);
+static char *check_one(const char *s, a_reg_exp_token *t);
 
 static inline
 char *check_char(const char *s, char c)
@@ -51,6 +52,26 @@ static char *check_star(const char *s, a_reg_exp_token *t)
 	return (char *)tmp;
 }
 
+static char *check_one(const char *s, a_reg_exp_token *t)
+{
+	switch (t->a_re_text_type) {
+	case RE_CHAR_TYPE_CHAR:
+		s = check_char(s, t->a_text.a_char);
+		break;
+	case RE_CHAR_TYPE_PARENS:
+		s = match(s, t->a_text.a_l);
+		a_reset_alt_list(t->a_text.a_l);
+		break;
+	case RE_CHAR_TYPE_BRACKETS:
+		s = match_cc_token_list(s, t->a_text.a_cc_l, t->a_is_negated);
+		a_reset_cc_list(t->a_text.a_cc_l);
+		break;
+	default:
+		s = NULL;
+	}
+	return (char *)s;
+}
+
 static char *match_token(const char *s, a_reg_exp_token *t)
 {
 	switch (t->a_quantifier) {
@@ -58,7 +79,8 @@ static char *match_token(const char *s, a_reg_exp_token *t)
 		s = (!*s ? s : NULL);
 		break;
 	case A_CHAR:
-		s = check_char(s, t->a_text.a_char);
+		//s = check_char(s, t->a_text.a_char);
+		s = check_one(s, t);
 		break;
 	case A_STAR:
 		s = check_star(s, t);
@@ -96,11 +118,11 @@ static char *match_cc_token_list(const char *s, a_cc_token_list *tl, char is_neg
 	while (t) {
 		s = match_cc_token(s, t);
 		if (s)
-			return (char *)s + 1;
+			return (is_negated ? NULL : (char *)s + 1);
 		s = tmp;
 		t = a_cc_get_next_token(tl);
 	}
-	return NULL;
+	return (is_negated ? (char *)tmp + 1 : NULL);
 }
 
 static char *match_token_list(const char *s, a_token_list *tl)
