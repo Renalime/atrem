@@ -69,8 +69,8 @@ int atrem_test()
 	char *s = "0aaccqwqwqwe";
 	*/
 	///*
-	char *re = "(abc){3}";
-	char *s = "abcabcabcabc";
+	char *re = "(abc|cba){2}[^0-9qwe.]+\\.?[qwe]{1}(hi)*";
+	char *s = "abccbaBZW.qhihihi";
 	char *t;
 	ar = atrem_parse_regex(re);
 	t = atrem_match_string(s, ar);
